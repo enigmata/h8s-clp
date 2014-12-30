@@ -1,0 +1,4 @@
+!SystemConfig
+env_vars: {PYTHONPATH: '/home/pi/nexus/python/pyserial-2.7:/home/pi/nexus/python/PyYAML-3.11/lib',
+           tested: 'stringtest',
+           other:  25}
