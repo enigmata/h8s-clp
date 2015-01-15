@@ -119,7 +119,7 @@ class InsteonPLM:
                 print 'serial port: %s' % (device)
                 self.plm = serial.Serial(port=device, baudrate=self.IMParms['IM_BAUDRATE'], 
                                                       timeout=self.IMParms['IM_CMD_TIMEOUT'])
-            except SerialException:  # TODO: convert each exception to a log write
+            except serial.SerialException:  # TODO: convert each exception to a log write
                 print 'Failed to configure serial port: %s' % (device)
                 self.plm = None # assume not a PLM on this port
                 continue
