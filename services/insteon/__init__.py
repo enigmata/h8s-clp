@@ -123,6 +123,10 @@ class InsteonPLM:
                 print 'Failed to configure serial port: %s' % (device)
                 self.plm = None # assume not a PLM on this port
                 continue
+            except OSError:
+                print 'Unable to access serial port: %s' % (device)
+                self.plm = None # assume not a PLM on this port
+                continue
     
             # successfully opened serial port, so now see if what's on the
             # other end of the port is an Insteon PLM by asking for it's version
