@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import services.config # well-known service, to bootstrap us in
 import argparse
 import sys, readline
