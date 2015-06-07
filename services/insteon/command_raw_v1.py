@@ -27,7 +27,7 @@ class Command_raw(Command):
             plm = self.owning_service.get_plm()
             success, response = plm.sendCommandRaw(args.command_string[0], cmd_args)
             if success: 
-                ret = ['%s = %s' % (key,''.join('\\x'+c.encode('hex') for c in response[key])) for key in response]
+                ret = ['  --> %s = %s' % (key,''.join('\\x'+c.encode('hex') for c in response[key])) for key in response]
                 # ret = ['Insteon PLM ID= %r.%r.%r; Device category=%r, subcategory=%r; firmware version=%r' % \
                 #         (response['id1'],response['id2'],response['id3'], response['dev_cat'], response['dev_subcat'], 
                 #          response['firm_ver'])]

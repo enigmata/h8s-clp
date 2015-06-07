@@ -30,8 +30,8 @@ class List_commands(Command):
                               (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0]), cmds[cmd][1], cmds[cmd][2], cmds[cmd][3], cmds[cmd][4])
                                  for cmd in cmds]
                 else:
-                    output = ['%-20s %s' % (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0])) for cmd in cmds]
-                    output.insert(0, 'Name                 Hex Command String')
+                    output = ['%-30s %s' % (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0])) for cmd in cmds]
+                    output.insert(0, 'Name                           Hex Command String')
             else:
                 output=['tbd']
 
