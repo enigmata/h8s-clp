@@ -76,12 +76,12 @@ class InsteonPLM:
 
         if cmd in self.IMSendCmds:
             cmdstr, respLen, respRegex, syntax, cmdhelp = self.IMSendCmds[cmd]
-            print '  --> before cmdstr=%r, len=%d' % (cmdstr, len(cmdstr))
+            #print '  --> before cmdstr=%r, len=%d' % (cmdstr, len(cmdstr))
             cmdstr = ''.join([cmdstr,args])
-            print '  --> after cmdstr=%r, len=%d' % (cmdstr,len(cmdstr))
+            print '  --> cmdstr=%r, len=%d' % (cmdstr,len(cmdstr))
             writelen = len(cmdstr)
             numwritten = self.plm.write( cmdstr )
-            print '  --> wrote %d of %d' % (numwritten, writelen)
+            #print '  --> wrote %d of %d' % (numwritten, writelen)
             if numwritten == writelen:
                 # need to clear out any leading nulls or garbage, until
                 # we see the STX (Start TeXt) byte signaling the beginning
