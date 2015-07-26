@@ -86,7 +86,7 @@ class InsteonPLM:
                 # need to clear out any leading nulls or garbage, until
                 # we see the STX (Start TeXt) byte signaling the beginning
                 # of the reply string proper
-                retries = 5
+                retries = 50
                 byteread = self.plm.read(1)
                 print '  --> first byte read=%r' % byteread
                 while (retries > 0 and byteread != self.IMParms['IM_COMM_STX']):
