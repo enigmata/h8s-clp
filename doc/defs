@@ -1,0 +1,93 @@
+1) PLM exec failure
+
+Example:
+============================================================================
+  --> response='P\x19\x074\x00\x00\x01\xcb', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_circumporch_off
+  --> cmdstr='\x02b\x1b\x03~\x05A\x05', len=8
+  --> first byte read='\x13'
+  --> not STX: '\x13'
+  --> not STX: '\x00'
+  --> response='P\x19\x074#\x9a\xc1A', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_boardwalk_on
+  --> cmdstr='\x02b\x1b\x03~\x05@\x04', len=8
+  --> first byte read='\x13'
+  --> not STX: '\x13'
+  --> not STX: '\x01'
+  --> response='P\x19\x07\xa1\x00\x00\x01\xc7', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_boardwalk_off
+  --> cmdstr='\x02b\x1b\x03~\x05A\x04', len=8
+  --> first byte read='\x13'
+  --> not STX: '\x13'
+  --> not STX: '\x00'
+  --> response='P\x19\x07\xa1#\x9a\xc1A', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_nd_on
+  --> cmdstr='\x02b\x1b\x03~\x05@\x03', len=8
+  --> first byte read='\x13'
+  --> not STX: '\x13'
+  --> not STX: '\x01'
+  --> response='P\x19\x074\x00\x00\x01\xcb', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_nd_off
+  --> cmdstr='\x02b\x1b\x03~\x05A\x03', len=8
+  --> first byte read='\x11'
+  --> not STX: '\x11'
+  --> not STX: '\x00'
+  --> response='P\x19\x074#\x9a\xc1A', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_frontyard_on
+  --> cmdstr='\x02b\x1b\x03~\x05@\x00', len=8
+  --> first byte read='\x11'
+  --> not STX: '\x11'
+  --> not STX: '\x01'
+  --> response='P\x19\x074\x00\x00\x01\xcb', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_frontyard_off
+  --> cmdstr='\x02b\x1b\x03~\x05A\x00', len=8
+  --> first byte read='\x13'
+  --> not STX: '\x13'
+  --> not STX: '\x00'
+  --> response='P\x19\x074#\x9a\xc1A', actual len=8, expected len=8
+
+PLM command execution failure
+
+> insteon.command_raw sprinkler_birch_on
+  --> cmdstr='\x02b\x1b\x03~\x05@\x02', len=8
+  --> first byte read='\x13'
+  --> not STX: '\x13'
+  --> not STX: '\x01'
+  --> response='b\x1b\x03~\x05@\x03\x06', actual len=8, expected len=8
+
+  --> id3 = \x7e
+  --> ack = \x06
+  --> id2 = \x03
+  --> cmd1 = \x40
+  --> cmd2 = \x03
+  --> id1 = \x1b
+  --> msg_flags = \x05
+
+> insteon.command_raw sprinkler_birch_off
+  --> cmdstr='\x02b\x1b\x03~\x05A\x02', len=8
+  --> first byte read='\x02'
+  --> response='P\x1b\x03~#\x9a\xc1"', actual len=8, expected len=8
+
+PLM command execution failure
+============================================================================
