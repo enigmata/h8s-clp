@@ -75,39 +75,54 @@ class InsteonPLM:
         cmd = cmd.upper()
 
         if cmd in self.IMSendCmds:
-            cmdstr, respLen, respRegex, syntax, cmdhelp = self.IMSendCmds[cmd]
-            #print '  --> before cmdstr=%r, len=%d' % (cmdstr, len(cmdstr))
+            cmdstr, syntax, cmdhelp = self.IMSendCmds[cmd]
             cmdstr = ''.join([cmdstr,args])
-            print '  --> cmdstr=%r, len=%d' % (cmdstr,len(cmdstr))
+            print '  --> cmdstr=%s, len=%d' % (''.join('\\x'+c.encode('hex') for c in cmdstr),len(cmdstr))
             writelen = len(cmdstr)
             numwritten = self.plm.write( cmdstr )
-            #print '  --> wrote %d of %d' % (numwritten, writelen)
             if numwritten == writelen:
-                # need to clear out any leading nulls or garbage, until
-                # we see the STX (Start TeXt) byte signaling the beginning
-                # of the reply string proper
-                retries = 50
-                byteread = self.plm.read(1)
-                print '  --> first byte read=%r' % byteread
-                while (retries > 0 and byteread != self.IMParms['IM_COMM_STX']):
-                    print '  --> not STX: %r' % byteread
+
+                while True:
+                    # need to clear out any leading nulls or garbage, until
+                    # we see the STX (Start TeXt) byte signaling the beginning
+                    # of the reply string proper
+                    retries = 50
                     byteread = self.plm.read(1)
-                    retries -= 1
+                    sys.stdout.write('  --> bytes read=%s' % '\\x'+byteread.encode('hex'))
+                    while (retries > 0 and byteread != self.IMParms['IM_COMM_STX']):
+                        sys.stdout.write(' ' + '\\x'+byteread.encode('hex'))
+                        byteread = self.plm.read(1)
+                        retries -= 1
 
-                if retries > 0:
+                    if retries > 0:
 
-                    # now we can get the proper IM response string
-                    response = self.plm.read(respLen) 
-                    print '  --> response=%r, actual len=%d, expected len=%d' % (response, len(response), respLen)
+                            cmdnum = self.plm.read(1)
+                            print
+                            print '  --> cmd # = %s' % '\\x'+cmdnum.encode('hex')
+
+                            if cmdnum in self.IMReceiveCmds:
+
+                                respLen, respRegex, respDescription = self.IMReceiveCmds[cmdnum]
+
+                                # now we can get the proper IM response string
+                                response = self.plm.read(respLen) 
+                                print '  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen)
     
-                    # validate the response
-                    m = re.match(respRegex, response)
-                    if m: 
-                        responseGroups = m.groupdict()
-                        if responseGroups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
-                            commandSuccessful = True
-                        else:
-                            responseGroups = {}
+                                if cmdnum == cmdstr[1]:
+                                    # validate the response to the command we sent
+                                    m = re.match(respRegex, response)
+                                    if m: 
+                                        responseGroups = m.groupdict()
+                                        if responseGroups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
+                                            commandSuccessful = True
+                                        else:
+                                            responseGroups = {}
+
+                                    break
+                            else:
+                                break
+                    else:
+                        break
 
         return commandSuccessful, responseGroups 
 
@@ -164,9 +179,13 @@ class InsteonPLM:
                         # other end of the port is an Insteon PLM by asking for it's version
                         success, response = self.sendCommandRaw('GET_VERSION')
                         if success: 
-                            print 'Insteon PLM ID= %r.%r.%r; Device category=%r, subcategory=%r; firmware version=%r' % \
-                                  (response['id1'],response['id2'],response['id3'], response['dev_cat'], response['dev_subcat'], 
-                                   response['firm_ver'])
+                            print 'Insteon PLM ID= %s.%s.%s; Device category=%s, subcategory=%s; firmware version=%s' % \
+                                  ('\\x'+response['id1'].encode('hex'),
+                                   '\\x'+response['id2'].encode('hex'),
+                                   '\\x'+response['id3'].encode('hex'),
+                                   '\\x'+response['dev_cat'].encode('hex'),
+                                   '\\x'+response['dev_subcat'].encode('hex'), 
+                                   '\\x'+response['firm_ver'].encode('hex'))
                             break  # found PLM, so all done
                         else:
                             print '  --> failed to send IM command to serial port'

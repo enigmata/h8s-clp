@@ -26,8 +26,8 @@ class List_commands(Command):
     
             if args.type == 'send':
                 if args.verbose:
-                    output = ['%s\n  hex cmd string=%s\n  reply len=%d\n  reply regex=%s\n  syntax=%s\n  help=%s' % \
-                              (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0]), cmds[cmd][1], cmds[cmd][2], cmds[cmd][3], cmds[cmd][4])
+                    output = ['%s\n  hex cmd string=%s\n  syntax=%s\n  help=%s' % \
+                              (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0]), cmds[cmd][1], cmds[cmd][2])
                                  for cmd in cmds]
                 else:
                     output = ['%-30s %s' % (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0])) for cmd in cmds]
