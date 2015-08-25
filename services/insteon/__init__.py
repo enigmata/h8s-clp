@@ -85,42 +85,39 @@ class InsteonPLM:
                 while True:
                     # need to clear out any leading nulls or garbage, until
                     # we see the STX (Start TeXt) byte signaling the beginning
-                    # of the reply string proper
-                    retries = 50
+                    # of the reply string or other monitor messages we need
+                    # to consume until we get the reply message for the command
+                    # we sent
+
                     byteread = self.plm.read(1)
                     sys.stdout.write('  --> bytes read=%s' % '\\x'+byteread.encode('hex'))
-                    while (retries > 0 and byteread != self.IMParms['IM_COMM_STX']):
+                    while (byteread != self.IMParms['IM_COMM_STX']):
                         sys.stdout.write(' ' + '\\x'+byteread.encode('hex'))
                         byteread = self.plm.read(1)
-                        retries -= 1
 
-                    if retries > 0:
+                    cmdnum = self.plm.read(1)
+                    print
+                    print '  --> cmd # = %s' % '\\x'+cmdnum.encode('hex')
 
-                            cmdnum = self.plm.read(1)
-                            print
-                            print '  --> cmd # = %s' % '\\x'+cmdnum.encode('hex')
+                    if cmdnum in self.IMReceiveCmds:
 
-                            if cmdnum in self.IMReceiveCmds:
+                        respLen, respRegex, respDescription = self.IMReceiveCmds[cmdnum]
 
-                                respLen, respRegex, respDescription = self.IMReceiveCmds[cmdnum]
-
-                                # now we can get the proper IM response string
-                                response = self.plm.read(respLen) 
-                                print '  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen)
+                        # now we can get the proper IM response string
+                        response = self.plm.read(respLen) 
+                        print '  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen)
     
-                                if cmdnum == cmdstr[1]:
-                                    # validate the response to the command we sent
-                                    m = re.match(respRegex, response)
-                                    if m: 
-                                        responseGroups = m.groupdict()
-                                        if responseGroups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
-                                            commandSuccessful = True
-                                        else:
-                                            responseGroups = {}
+                        if cmdnum == cmdstr[1]:
+                            # validate the response to the command we sent
+                            m = re.match(respRegex, response)
+                            if m: 
+                                responseGroups = m.groupdict()
+                                if responseGroups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
+                                    commandSuccessful = True
+                                else:
+                                    responseGroups = {}
 
-                                    break
-                            else:
-                                break
+                            break
                     else:
                         break
 
