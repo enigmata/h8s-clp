@@ -33,6 +33,7 @@ class Service():
         self.COMMANDS_IDX_SAW = 3 # highest cmd version found in file system
         self.re_command_fname = re.compile(r'^(([^_.].*)_v(\d+))\.py$')
         self.root_dir = path
+        self.cmd_dir  = os.path.join(self.root_dir, 'commands')
         self.service_name = os.path.basename(self.root_dir)
 
     def getName(self):
@@ -55,10 +56,10 @@ class Service():
 
     def load_commands(self):
 
-        for command_fname in os.listdir(self.root_dir):
+        for command_fname in os.listdir(self.cmd_dir):
             
             m = self.re_command_fname.match(command_fname)
-            if m and os.path.isfile(os.path.join(self.root_dir, command_fname)):
+            if m and os.path.isfile(os.path.join(self.cmd_dir, command_fname)):
 
                 command_name = m.group(2)
                 command_ver = long(m.group(3))
@@ -73,7 +74,7 @@ class Service():
                 if command_name not in self.commands:
 
                     command_fullname = m.group(1)
-                    command_mod = importlib.import_module('services.'+self.service_name+'.'+command_fullname)
+                    command_mod = importlib.import_module('services.'+self.service_name+'.commands.'+command_fullname)
                     command_obj = getattr( command_mod, command_name.capitalize() )(self, command_ver)
                     self.commands[command_name] = [ command_mod, command_obj, command_ver, command_ver ]
 
@@ -104,7 +105,7 @@ class Service():
                    
                     # we're rolling back to an earlier version of command, and we've already
                     # made room for it because we've deleted the newer version from the dict
-                    command_mod = importlib.import_module('services.'+self.service_name+'.'+command_name+'_v'+command_ver)
+                    command_mod = importlib.import_module('services.'+self.service_name+'.commands.'+command_name+'_v'+command_ver)
                     command_obj = getattr( command_mod, command_name.capitalize() )(self, command_ver)
                     self.commands[command_name] = [ command_mod, command_obj, command_ver, 0 ]
     
