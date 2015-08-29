@@ -71,20 +71,9 @@ def interactiveMode( cfg ):
 
 
 
-def batchMode( cfg ):
-
-    pass
-
-
 if __name__ == '__main__':
 
     cfg = services.config.Config()
 
-    if len(sys.argv) <= 1:
-        interactiveMode(cfg)
-    else:
-        batchMode(cfg)
-    
-    
-
+    interactiveMode(cfg)
 
