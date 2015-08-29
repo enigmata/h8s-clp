@@ -1,13 +1,13 @@
 from command import Command, CommandInterface
 
-class List_commands(Command):
+class Commands(Command):
 
     def __init__(self, owning_service, version):
 
         self.owning_service = owning_service
         self.plm = owning_service.get_plm()
 
-        self.interface = CommandInterface('list_commands', 'List Insteon PLM commands', version, self,
+        self.interface = CommandInterface('commands', 'List Insteon PLM commands', version, self,
                                           {'type': {'type':str, 
                                                     'choices':['send','receive'],
                                                     'action':'store', 

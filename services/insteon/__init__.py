@@ -5,6 +5,7 @@ import yaml
 #import json
 import os
 import sys
+import json
 from service import Service
 
 # Terminology:
@@ -53,6 +54,13 @@ class InsteonPLM:
             stream.close()
             raise InsteonPLMConfigError('Cannot read insteon.yaml config file')
 
+        try:
+            f = open(os.path.join(os.path.dirname(sys.modules['services.insteon'].__file__), 'devices.json'))
+            self.devices = json.load(f)
+            f.close()
+        except IOError:
+            raise InsteonPLMConfigError('Cannot read devices.json file')
+
         stream.close()
 
     def get_send_cmds(self):
@@ -62,6 +70,10 @@ class InsteonPLM:
     def get_receive_cmds(self):
 
         return self.IMReceiveCmds
+
+    def get_devices(self):
+
+        return self.devices
 
     def sendCommandRaw(self, cmd, args=''):
         """

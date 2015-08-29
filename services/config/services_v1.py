@@ -1,13 +1,13 @@
 from command import Command, CommandInterface
 
-class List_services(Command):
+class Services(Command):
 
     def __init__(self, owning_service, version):
 
         self.owning_service = owning_service
         choices=self.services_list()
 
-        self.interface = CommandInterface('list_services', 'List nexus services', version, self,
+        self.interface = CommandInterface('services', 'List nexus services', version, self,
                                           {'service': {'type':str, 
                                                        'choices':choices, 
                                                        'action':'store', 

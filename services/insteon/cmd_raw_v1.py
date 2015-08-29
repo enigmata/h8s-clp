@@ -1,11 +1,11 @@
 from command import Command, CommandInterface
 
-class Command_raw(Command):
+class Cmd_raw(Command):
 
     def __init__(self, owning_service, version):
 
         self.owning_service = owning_service
-        self.interface = CommandInterface('command_raw', 'Send Insteon command without protocol control', version, self, 
+        self.interface = CommandInterface('cmd_raw', 'Send Insteon command without protocol control', version, self, 
                                           {'command_string': {'type':str, 
                                                               'nargs':'+', 
                                                               'action':'store', 
