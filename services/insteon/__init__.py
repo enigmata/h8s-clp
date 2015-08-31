@@ -75,7 +75,7 @@ class InsteonPLM:
 
         return self.devices
 
-    def sendCommandRaw(self, cmd, args=''):
+    def send_command(self, cmd, args=''):
         """
         Send a command to the PLM without governance by the protocol.
         That is, allow any valid command to be sent to the PLM without
@@ -186,7 +186,7 @@ class InsteonPLM:
     
                         # successfully opened serial port, so now see if what's on the
                         # other end of the port is an Insteon PLM by asking for it's version
-                        success, response = self.sendCommandRaw('GET_VERSION')
+                        success, response = self.send_command('GET_VERSION')
                         if success: 
                             print 'Insteon PLM ID= %s.%s.%s; Device category=%s, subcategory=%s; firmware version=%s' % \
                                   ('\\x'+response['id1'].encode('hex'),

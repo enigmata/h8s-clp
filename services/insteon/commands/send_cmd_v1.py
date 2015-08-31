@@ -1,11 +1,11 @@
 from command import Command, CommandInterface
 
-class Cmd_raw(Command):
+class Send_cmd(Command):
 
     def __init__(self, owning_service, version):
 
         self.owning_service = owning_service
-        self.interface = CommandInterface('cmd_raw', 'Send Insteon command without protocol control', version, self, 
+        self.interface = CommandInterface('send_cmd', 'Send Insteon command without protocol control', version, self, 
                                           {'command_string': {'type':str, 
                                                               'nargs':'+', 
                                                               'action':'store', 
@@ -25,7 +25,7 @@ class Cmd_raw(Command):
                 cmd_args = ''
 
             plm = self.owning_service.get_plm()
-            success, response = plm.sendCommandRaw(args.command_string[0], cmd_args)
+            success, response = plm.send_command(args.command_string[0], cmd_args)
             if success: 
                 ret = ['  --> %s = %s' % (key,''.join('\\x'+c.encode('hex') for c in response[key])) for key in response]
                 # ret = ['Insteon PLM ID= %r.%r.%r; Device category=%r, subcategory=%r; firmware version=%r' % \
@@ -37,17 +37,4 @@ class Cmd_raw(Command):
             ret = ['PLM is not initialized']
 
         return ret
-
-        #if output_text:
-
-        #    output = ['%s\n  %s\n  State=%s\n  Version=%d\n  Root directory=%s' % \
-        #              (s.getName(), s.getDescription(), s.getState(), s.getVersion(), s.getPath())
-        #                 for s in self.owning_service.services()]
-
-        #else:
-        #
-        #    output = [s for s in self.owning_service.services()]
-
-        #return output
-
 
