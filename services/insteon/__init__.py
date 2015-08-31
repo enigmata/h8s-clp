@@ -80,6 +80,7 @@ class InsteonPLM:
         Send a command to the PLM without governance by the protocol.
         That is, allow any valid command to be sent to the PLM without
         checking if it is a valid successor to the previous command.
+        This will work in all cases because Insteon commands are idempotent.
         """
 
         responseGroups = {}
@@ -128,12 +129,62 @@ class InsteonPLM:
                                     commandSuccessful = True
                                 else:
                                     responseGroups = {}
-
                             break
                     else:
                         break
+        else:
+            print 'ERROR: Command not recognized: \"%s\". Please teach me.' % (cmd)
 
         return commandSuccessful, responseGroups 
+
+
+    def monitor(self):
+        """
+        Query the PLM for messages, of which there are two types
+        that are send from the PLM to the host (this code):
+        1) Responses to 0x60 series commands
+        2) All 0x50 series commands received by the PLM sent
+           by other devices, hosts
+        """
+
+        while True:
+            # need to clear out any leading nulls or garbage, until
+            # we see the STX (Start TeXt) byte signaling the beginning
+            # of the reply string or other monitor messages we need
+            # to consume until we get the reply message for the command
+            # we sent
+
+            byteread = self.plm.read(1)
+            sys.stdout.write('  --> bytes read=%s' % '\\x'+byteread.encode('hex'))
+            while (byteread != self.IMParms['IM_COMM_STX']):
+                sys.stdout.write(' ' + '\\x'+byteread.encode('hex'))
+                byteread = self.plm.read(1)
+
+            cmdnum = self.plm.read(1)
+            print
+            print '  --> cmd # = %s' % '\\x'+cmdnum.encode('hex')
+
+            if cmdnum in self.IMReceiveCmds:
+
+                respLen, respRegex, respDescription = self.IMReceiveCmds[cmdnum]
+
+                # now we can get the proper IM response string
+                response = self.plm.read(respLen) 
+                print '  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen)
+    
+                #m = re.match(respRegex, response)
+                #if m: 
+                #    responseGroups = m.groupdict()
+                #    if responseGroups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
+                #        commandSuccessful = True
+                #    else:
+                #        responseGroups = {}
+
+                #break
+
+            else:
+                print '  --> ERROR: Did not recognize the command received. Aborting so that you can fix my metadata.'
+                break
 
 
     def disconnect(self):
