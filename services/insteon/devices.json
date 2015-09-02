@@ -321,8 +321,22 @@
         "subcategory": "42",
         "yakity_yak": "True"
     },
+    "1B.03.7E": {
+        "display_name": "EZFlora Irrigation Controller",
+        "room": "Office",
+        "location": "South-west corner",
+        "type": "EZFlora",
+        "active": "Active",
+        "hop_if_mod_sync_fails": "True",
+        "powerline": "True",
+        "radio": "True",
+        "revision": "?",
+        "category": "?",
+        "subcategory": "?",
+        "yakity_yak": "True"
+    },
     "23.9A.C1": {
-        "active": "False",
+        "active": "Active",
         "category": "3",
         "display_name": "PowerLinc Serial Modem",
         "type": "PLM",
