@@ -77,3 +77,8 @@ if __name__ == '__main__':
 
     interactiveMode(cfg)
 
+    # TODO: only support one mode: interactive or batch, then
+    #       convert into main() with a return code thereby
+    #       allowing the cleaner:  sys.exit(main())
+    sys.exit(0)
+
