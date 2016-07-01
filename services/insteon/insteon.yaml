@@ -1,0 +1,85 @@
+# Insteon configuration file
+# Part 1: Insteon PLM (IM) send commands
+#  format:  dictionary
+#             - key: IM command in hex
+#             - value: list:
+#                       - full host-to-IM command with arguments, in hex; if null or empty, then it is a host-to-IM reply
+#                       - command syntax
+#                       - command help
+#                        
+'GET_VERSION':
+ - "\x02\x60" # command in hex
+ - "GET_VERSION" # command syntax
+ - "Retrieve the version of the PLM, as well as other PLM info like device category and sub-category."
+'SEND_STD_MSG':
+ - "\x02\x62"
+ - "SEND_STD_MSG <addr1><addr2><addr3>0511<level 00-ff>" # command syntax
+ - "A standard message controls insteon devices, making then turn on, off, and so on."
+'SPRINKLER_BIRCH_ON':
+ - "\x02\x62\x1B\x03\x7E\x05\x40\x02"
+ - "SPRINKLER_BIRCH_ON" # command syntax
+ - "Turn on the sprinkler in the birch tree stand at front of house"
+'SPRINKLER_BIRCH_OFF':
+ - "\x02\x62\x1B\x03\x7E\x05\x41\x02"
+ - "SPRINKLER_BIRCH_OFF" # command syntax
+ - "Turn off the sprinkler in the birch tree stand at front of house"
+'SPRINKLER_CIRCUMPORCH_ON':
+ - "\x02\x62\x1B\x03\x7E\x05\x40\x05"
+ - "SPRINKLER_CIRCUMPORCH_ON" # command syntax
+ - "Turn on the sprinkler around the porch"
+'SPRINKLER_CIRCUMPORCH_OFF':
+ - "\x02\x62\x1B\x03\x7E\x05\x41\x05"
+ - "SPRINKLER_CIRCUMPORCH_OFF" # command syntax
+ - "Turn off the sprinkler around the porch"
+'SPRINKLER_BOARDWALK_ON':
+ - "\x02\x62\x1B\x03\x7E\x05\x40\x04"
+ - "SPRINKLER_BOARDWALK_ON" # command syntax
+ - "Turn on the sprinkler along Boardwalk street"
+'SPRINKLER_BOARDWALK_OFF':
+ - "\x02\x62\x1B\x03\x7E\x05\x41\x04"
+ - "SPRINKLER_BOARDWALK_OFF" # command syntax
+ - "Turn off the sprinkler along Boardwalk street"
+'SPRINKLER_FRONTYARD_ON':
+ - "\x02\x62\x1B\x03\x7E\x05\x40\x00"
+ - "SPRINKLER_FRONTYARD_ON" # command syntax
+ - "Turn on the sprinkler for the front yard"
+'SPRINKLER_FRONTYARD_OFF':
+ - "\x02\x62\x1B\x03\x7E\x05\x41\x00"
+ - "SPRINKLER_FRONTYARD_OFF" # command syntax
+ - "Turn off the sprinkler for the front yard"
+'SPRINKLER_ND_ON':
+ - "\x02\x62\x1B\x03\x7E\x05\x40\x03"
+ - "SPRINKLER_ND_ON" # command syntax
+ - "Turn on the sprinkler for the strip on Northern Dancer"
+'SPRINKLER_ND_OFF':
+ - "\x02\x62\x1B\x03\x7E\x05\x41\x03"
+ - "SPRINKLER_ND_OFF" # command syntax
+ - "Turn off the sprinkler for the strip on Northern Dancer"
+---
+# Part 2: Insteon PLM (IM) receive commands
+#  format:  dictionary
+#             - key: IM command in hex
+#             - value: list:
+#                       - payload length (total msg length - STX byte - IM cmd byte) 
+#                       - regex describing the shape of command's payload
+#                       - description
+"\x50":  # standard msg received
+ - 9     # payload length (total msg length - STX byte - IM cmd byte)
+ - (?P<from-id1>[\x00-\xff])(?P<from-id2>[\x00-\xff])(?P<from-id3>[\x00-\xff])(?P<to-id1>[\x00-\xff])(?P<to-id2>[\x00-\xff])(?P<to-id3>[\x00-\xff])(?P<msg-flags>[\x00-\xff])(?P<cmd1>[\x00-\xff])(?P<cmd2>[\x00-\xff])
+ - "Insteon standard message received"
+"\x60":  # response of the command:  get IM version
+ - 7          # length of reply
+ - (?P<id1>[\x00-\xff])(?P<id2>[\x00-\xff])(?P<id3>[\x00-\xff])(?P<dev_cat>[\x00-\xff])(?P<dev_subcat>[\x00-\xff])(?P<firm_ver>[\x00-\xff])(?P<ack>[\x06\x15])
+ - "Response of the command: GET IM VERSION"
+"\x62":  # reply of a standard msg sent
+ - 7     # payload length (total msg length - STX byte - IM cmd byte)
+ - (?P<id1>[\x00-\xff])(?P<id2>[\x00-\xff])(?P<id3>[\x00-\xff])(?P<msg_flags>[\x00-\xff])(?P<cmd1>[\x00-\xff])(?P<cmd2>[\x00-\xff])(?P<ack>[\x06\x15])
+ - "Response of the commmand: SEND STANDARD MESSAGE"
+---
+# Part 3: Insteon Parameters or Settings
+IM_REPLY_MAXLEN: 64
+IM_BAUDRATE: 19200
+IM_CMD_TIMEOUT: null
+IM_CMD_SUCCESS: "\x06"
+IM_CMD_FAILURE: "\x15"
+IM_COMM_STX: "\x02"
