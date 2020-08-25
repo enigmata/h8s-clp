@@ -1,0 +1,34 @@
+USB for Insteon PLM
+===================
+
+This note is for control of the PLM via a USB driver, which it 
+turned out was not possible. The USB PLM is interfaced using
+an FTDI UART chip which wants to be talked at with serial
+configuration settings of 19,200 baud, 8 bits data, 1 stop
+bit, and no parity bits. Cannot set this using USB. Needed
+the FTDI serial driver (ftdi_sio module) which then allows
+using pySerial API. So the following  note was for
+the USB attempt, which as I say did not work out:
+
+Device busy 
+   - the ftdi_sio driver (kernel module) would load when the PLM was
+     plugged into the USB port
+   - the pyUSB code uses libusb which also acts like a driver in that
+     it tries to grab the PLM on the USB port for itself
+   - because the ftdi_sio driver already had the PLM on the USB port
+     the pyUSB code got a device busy error via libusb
+   - fixed by blacklisting the ftdi_sio module so it will never load
+   - added line: "blacklist ftdi_sio" to file:
+   - /etc/modprobe.d/nexus-blocklist.conf
+
+This note applies to both scenarios, either communicating to PLM via
+USB protocol or via UART serial protocol over USB via the FTDI chip:
+
+Insufficient permissions, errno=13
+   - running the pyUSB code as non-root user would fail with 
+     insufficient permissions
+   - by default, USB devices require root to interrogate and config
+   - lsusb would return limited info until you run with sudo
+   - fixed by adding this line to /etc/udev/rules.d/99_my.rules
+        ATTR{idVendor}=="0403",ATTR{idProduct}=="6001",MODE="666"
+

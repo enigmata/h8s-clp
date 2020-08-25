@@ -1,0 +1,466 @@
+{
+    "11.11.11": {
+        "name": "Basement hallway night light", 
+        "room": "Basement hallway", 
+        "location": "East socket", 
+        "type": "insteon/LampLinc",
+        "active": "True", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "65", 
+            "subcategory": "14", 
+            "yakity_yak": "True"
+        } 
+    }, 
+    "18.38.5C": {
+        "name": "Balcony light switch", 
+        "room": "Media room", 
+        "location": "Balcony door", 
+        "type": "insteon/SwitchLinc",
+        "active": "True", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        } 
+    }, 
+    "18.3D.3D": {
+        "name": "Basement stairway light switch bottom", 
+        "room": "Games room", 
+        "location": "Basement stairway bottom", 
+        "type": "insteon/SwitchLinc",
+        "active": "True", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        } 
+    }, 
+    "18.3D.DA": {
+        "name": "Kitchen island light switch", 
+        "room": "Kitchen", 
+        "location": "North wall opposite island", 
+        "type": "insteon/SwitchLinc",
+        "active": "True", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        } 
+    }, 
+    "18.42.7F": {
+        "name": "Master bathroom mirror LED light switch", 
+        "room": "Master bathroom", 
+        "location": "Right of mirror [--|-]", 
+        "type": "insteon/SwitchLinc",
+        "active": "True", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }
+    }, 
+    "18.42.8F": {
+        "active": "True", 
+        "location": "Kitchen door leading to backyard deck", 
+        "name": "Deck Light Switch", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Kitchen", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "18.44.E0": {
+        "active": "True", 
+        "location": "Basement stairway top", 
+        "name": "Basement Stairway Light Switch @ Top", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Basement Stairway", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "18.46.0D": {
+        "active": "True", 
+        "location": "Beside Front Door", 
+        "name": "Front Door Entryway Light Switch", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Front Door Entryway", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "18.46.D2": {
+        "active": "True", 
+        "location": "Outside Powder Room Door", 
+        "name": "1st Floor Under Stairway Light Switch", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "1st Floor Under Stairway", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "18.46.D7": {
+        "active": "True", 
+        "location": "", 
+        "name": "Master Bathroom Shower Fan Switch", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Master Bathroom", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "18.48.D1": {
+        "active": "True", 
+        "location": "Front door", 
+        "name": "Front Porch Light Switch", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Front Hallway", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "18.B3.BE": {
+        "active": "True", 
+        "location": "Under table at top of stairway on 2nd floor", 
+        "name": "2nd Floor Stairway Outlet @ Top", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "56", 
+            "subcategory": "8", 
+            "yakity_yak": "True"
+        }, 
+        "room": "2nd Floor Hallway", 
+        "type": "insteon/OutletLinc"
+    }, 
+    "19.07.34": {
+        "active": "True", 
+        "location": "Island", 
+        "name": "Kitchen Light Switch @ Island", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "57", 
+            "subcategory": "45", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Kitchen", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "19.07.A1": {
+        "active": "True", 
+        "location": "", 
+        "name": "Games Room Dimmer Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "57", 
+            "subcategory": "45", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Games Room", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "19.E7.52": {
+        "active": "True", 
+        "location": "Back door", 
+        "name": "Kitchen Light Switch @ Back Door", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Kitchen", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "19.ED.D1": {
+        "active": "True", 
+        "location": "By Office", 
+        "name": "Basement Hallway Light Switch @ Office", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "58", 
+            "subcategory": "28", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Basement Hallway", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "19.FF.B7": {
+        "active": "True", 
+        "location": "", 
+        "name": "Office Dimmer Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "64", 
+            "subcategory": "32", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Office", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "1A.00.D7": {
+        "active": "True", 
+        "location": "", 
+        "name": "Media Room Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "64", 
+            "subcategory": "32", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Media Room", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "1A.0C.D3": {
+        "active": "True", 
+        "location": "At front window", 
+        "name": "Living Room Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "64", 
+            "subcategory": "32", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Living Room", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "1A.0E.4A": {
+        "active": "True", 
+        "location": "Kitchen Island", 
+        "name": "Dining Room Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "64", 
+            "subcategory": "32", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Dining Room", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "1B.03.7E": {
+        "active": "Active", 
+        "location": "South-west corner", 
+        "name": "EZFlora Irrigation Controller", 
+        "properties": {
+            "category": "?", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "?", 
+            "subcategory": "?", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Office", 
+        "type": "insteon/EZFlora"
+    }, 
+    "20.C6.54": {
+        "name": "3rd floor stairway light top", 
+        "room": "3rd floor stairway", 
+        "location": "Stairway top ceiling", 
+        "type": "insteon/InlineLinc",
+        "active": "True", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "65", 
+            "subcategory": "50", 
+            "yakity_yak": "True"
+        } 
+    }, 
+    "20.FC.31": {
+        "name": "3rd floor keypad switch", 
+        "room": "3rd floor stairway", 
+        "location": "Beside bedroom door", 
+        "type": "insteon/KeypadLinc",
+        "active": "True", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "65", 
+            "subcategory": "44", 
+            "yakity_yak": "True"
+        } 
+    }, 
+    "22.A6.D4": {
+        "active": "True", 
+        "location": "Base of 3rd floor stairway", 
+        "name": "3rd Floor Stairway Light Switch @ Bottom", 
+        "properties": {
+            "category": "2", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "66", 
+            "subcategory": "42", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Media Room", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "23.9A.C1": {
+        "active": "Active", 
+        "location": "East wall outlet, under window", 
+        "name": "PowerLinc Serial Modem", 
+        "properties": {
+            "category": "3", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "155", 
+            "subcategory": "21", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Office", 
+        "type": "insteon/PLM"
+    }, 
+    "23.AC.55": {
+        "active": "True", 
+        "location": "", 
+        "name": "Master Bathroom Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "65", 
+            "subcategory": "32", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Master Bathroom", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "23.AE.BB": {
+        "active": "True", 
+        "location": "Outside closet", 
+        "name": "Master Bedroom Closet Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "65", 
+            "subcategory": "32", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Master Bedroom Closet", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "23.B0.2D": {
+        "active": "True", 
+        "location": "", 
+        "name": "Master Bathroom Shower Light Switch", 
+        "properties": {
+            "category": "1", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "65", 
+            "subcategory": "32", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Master Bathroom", 
+        "type": "insteon/SwitchLinc"
+    }, 
+    "AA.AA.AA": {
+        "active": "False", 
+        "location": "", 
+        "name": "PowerLinc Serial Modem-Dev Unit", 
+        "properties": {
+            "category": "3", 
+            "hop_if_mod_sync_fails": "True", 
+            "powerline": "True", 
+            "radio": "True", 
+            "revision": "155", 
+            "subcategory": "17", 
+            "yakity_yak": "True"
+        }, 
+        "room": "Office", 
+        "type": "insteon/PLM"
+    }
+}
