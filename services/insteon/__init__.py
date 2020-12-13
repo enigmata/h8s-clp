@@ -1,7 +1,7 @@
 import serial
 import glob
 import re
-import yaml
+from ruamel.yaml import YAML
 import os
 import sys
 import json
@@ -48,6 +48,8 @@ class InsteonPLM:
         if not stream:
             raise InsteonPLMConfigError('Cannot open or read insteon json config files')
 
+        # self.IMSendCmds, self.IMReceiveCmds, self.IMParms = yaml.load_all(stream)
+        yaml = YAML(typ='safe')
         self.IMSendCmds, self.IMReceiveCmds, self.IMParms = yaml.load_all(stream)
         if not self.IMSendCmds or not self.IMReceiveCmds or not self.IMParms:
             stream.close()
