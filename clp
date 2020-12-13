@@ -63,11 +63,11 @@ def interactiveMode( cfg ):
             if args.command=='quit' and args.quit:
                 break
             elif args.command=='refresh' and args.refresh:
-                print 'TODO: code to refresh commands thru config service'
+                print('TODO: code to refresh commands thru config service')
             else:
                 output = cfg.execute_service_command( args.command, args, output_text = True )
                 print
-                for line in output: print line
+                for line in output: print(line)
 
 
 

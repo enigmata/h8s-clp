@@ -2,7 +2,6 @@ import serial
 import glob
 import re
 import yaml
-#import json
 import os
 import sys
 import json
@@ -90,7 +89,7 @@ class InsteonPLM:
         if cmd in self.IMSendCmds:
             cmdstr, syntax, cmdhelp = self.IMSendCmds[cmd]
             cmdstr = ''.join([cmdstr,args])
-            print '  --> cmdstr=%s, len=%d' % (''.join('\\x'+c.encode('hex') for c in cmdstr),len(cmdstr))
+            print('  --> cmdstr=%s, len=%d' % (''.join('\\x'+c.encode('hex') for c in cmdstr),len(cmdstr)))
             writelen = len(cmdstr)
             numwritten = self.plm.write( cmdstr )
             if numwritten == writelen:
@@ -109,8 +108,7 @@ class InsteonPLM:
                         byteread = self.plm.read(1)
 
                     cmdnum = self.plm.read(1)
-                    print
-                    print '  --> cmd # = %s' % '\\x'+cmdnum.encode('hex')
+                    print('\n  --> cmd # = %s' % '\\x'+cmdnum.encode('hex'))
 
                     if cmdnum in self.IMReceiveCmds:
 
@@ -118,7 +116,7 @@ class InsteonPLM:
 
                         # now we can get the proper IM response string
                         response = self.plm.read(respLen) 
-                        print '  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen)
+                        print('  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen))
     
                         if cmdnum == cmdstr[1]:
                             # validate the response to the command we sent
@@ -133,7 +131,7 @@ class InsteonPLM:
                     else:
                         break
         else:
-            print 'ERROR: Command not recognized: \"%s\". Please teach me.' % (cmd)
+            print(f'ERROR: Command not recognized: "{cmd}"')
 
         return commandSuccessful, responseGroups 
 
@@ -161,8 +159,7 @@ class InsteonPLM:
                 byteread = self.plm.read(1)
 
             cmdnum = self.plm.read(1)
-            print
-            print '  --> cmd # = %s' % '\\x'+cmdnum.encode('hex')
+            print('\n  --> cmd # = %s' % '\\x'+cmdnum.encode('hex'))
 
             if cmdnum in self.IMReceiveCmds:
 
@@ -170,7 +167,7 @@ class InsteonPLM:
 
                 # now we can get the proper IM response string
                 response = self.plm.read(respLen) 
-                print '  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen)
+                print('  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen))
     
                 #m = re.match(respRegex, response)
                 #if m: 
@@ -183,7 +180,7 @@ class InsteonPLM:
                 #break
 
             else:
-                print '  --> ERROR: Did not recognize the command received. Aborting so that you can fix my metadata.'
+                print('  --> ERROR: Did not recognize the command received. Aborting so that you can fix my metadata.')
                 break
 
 
@@ -206,7 +203,7 @@ class InsteonPLM:
         # test each serial device to see if an Insteon PLM is attached
         for device in USBDevices:
 
-            print 'testing serial port: %s' % (device)
+            print(f'testing serial port: {device}')
 
             # check to see if something is connected to the port
             base = os.path.basename(device)
@@ -218,7 +215,7 @@ class InsteonPLM:
 
                     vendor = read_line(sys_usb+'/idVendor')
                     product = read_line(sys_usb+'/idProduct')
-                    print '  --> USB device vendor_id:product_id=%s:%s' % (vendor,product)
+                    print(f'  --> USB device vendor_id:product_id={vendor}:{product}')
 
                     # insteon PLM is an FTDI (vendor=0403) USB USART (product=6001)
                     if (vendor == '0403' and product == '6001'):
@@ -227,11 +224,11 @@ class InsteonPLM:
                         try:
                             self.plm = serial.Serial(port=device, baudrate=self.IMParms['IM_BAUDRATE'], timeout=5)
                         except serial.SerialException:  # TODO: convert each exception to a log write
-                            print '  --> Failed to open serial port'
+                            print('  --> Failed to open serial port')
                             self.plm = None # assume not a PLM on this port
                             continue
                         except OSError:
-                            print '  --> Unable to access serial port'
+                            print('  --> Unable to access serial port')
                             self.plm = None # assume not a PLM on this port
                             continue
     
@@ -239,24 +236,24 @@ class InsteonPLM:
                         # other end of the port is an Insteon PLM by asking for it's version
                         success, response = self.send_command('GET_VERSION')
                         if success: 
-                            print 'Insteon PLM ID= %s.%s.%s; Device category=%s, subcategory=%s; firmware version=%s' % \
+                            print('Insteon PLM ID= %s.%s.%s; Device category=%s, subcategory=%s; firmware version=%s' % \
                                   ('\\x'+response['id1'].encode('hex'),
                                    '\\x'+response['id2'].encode('hex'),
                                    '\\x'+response['id3'].encode('hex'),
                                    '\\x'+response['dev_cat'].encode('hex'),
                                    '\\x'+response['dev_subcat'].encode('hex'), 
-                                   '\\x'+response['firm_ver'].encode('hex'))
+                                   '\\x'+response['firm_ver'].encode('hex')))
                             break  # found PLM, so all done
                         else:
-                            print '  --> failed to send IM command to serial port'
+                            print('  --> failed to send IM command to serial port')
                             self.plm.close()
                             self.plm = None # assume not a PLM on this port
                     else:
-                        print '  --> not an FTDI UART'
+                        print('  --> not an FTDI UART')
                 else:
-                    print '  --> not a USB serial device'
+                    print('  --> not a USB serial device')
             else:
-                print '  --> nothing connected to the port'
+                print('  --> nothing connected to the port')
     
         # if we get here without finding a PLM on a USB port, then
         # we've exhausted all possibilities and must raise an error
@@ -281,10 +278,10 @@ class Insteon(Service):
             self.plm = InsteonPLM()
             self.plm.connect()
         except InsteonPLMConfigError as PLMerr:
-            print 'Insteon PLM config error: %s' % (PLMerr.data)
+            print(f'Insteon PLM config error: {PLMerr.data}')
             self.state = 'uninitialized'
         else:
-            print 'Insteon PLM found and configured successfully'
+            print('Insteon PLM found and configured successfully')
             self.state = 'initialized'
 
         self.load_commands()
