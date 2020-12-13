@@ -30,7 +30,7 @@ class Config(Service):
 
         for service_name in os.listdir(self.services_dir):
 
-            if not service_name == 'config':
+            if not service_name == 'config' and not service_name.startswith('__'):
                 service_dir = os.path.join(self.services_dir, service_name)
                 if os.path.isdir(service_dir): 
 
