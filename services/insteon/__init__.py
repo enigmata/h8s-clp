@@ -1,10 +1,12 @@
 import serial
 import glob
 import re
-from ruamel.yaml import YAML
 import os
 import sys
 import json
+
+from pathlib import Path
+from ruamel.yaml import YAML
 from service import Service
 
 # Terminology:
@@ -41,18 +43,16 @@ class InsteonPLM:
         self.plm = None  # represents serial port to which plm is attached
 
         try:
-            stream = file(os.path.join(os.path.dirname(sys.modules['services.insteon'].__file__), 'insteon.yaml'), 'r')
+            cfg_file= Path(os.path.join(os.path.dirname(sys.modules['services.insteon'].__file__), 'insteon.yaml'))
         except IOError:
-            stream = None  # ensure to raise native exception
+            cfg_file = None  # ensure to raise native exception
 
-        if not stream:
+        if not cfg_file:
             raise InsteonPLMConfigError('Cannot open or read insteon json config files')
 
-        # self.IMSendCmds, self.IMReceiveCmds, self.IMParms = yaml.load_all(stream)
         yaml = YAML(typ='safe')
-        self.IMSendCmds, self.IMReceiveCmds, self.IMParms = yaml.load_all(stream)
+        self.IMSendCmds, self.IMReceiveCmds, self.IMParms = yaml.load_all(cfg_file)
         if not self.IMSendCmds or not self.IMReceiveCmds or not self.IMParms:
-            stream.close()
             raise InsteonPLMConfigError('Cannot read insteon.yaml config file')
 
         try:
@@ -61,8 +61,6 @@ class InsteonPLM:
             f.close()
         except IOError:
             raise InsteonPLMConfigError('Cannot read devices.json file')
-
-        stream.close()
 
     def get_send_cmds(self):
 
