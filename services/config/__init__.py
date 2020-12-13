@@ -14,7 +14,7 @@ for dir in range(len(lib_dirs)):
        lib_dirs[dir] = os.path.join(lib_dirs[dir], 'lib') 
     sys.path.insert(1, lib_dirs[dir])
 
-#print lib_dirs
+print(lib_dirs)
 
 from service import Service
 
