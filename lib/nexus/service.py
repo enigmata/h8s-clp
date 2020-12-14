@@ -62,7 +62,7 @@ class Service():
             if m and os.path.isfile(os.path.join(self.cmd_dir, command_fname)):
 
                 command_name = m.group(2)
-                command_ver = long(m.group(3))
+                command_ver = int(m.group(3))
 
                 if command_name in self.commands and command_ver > self.commands[command_name][self.COMMANDS_IDX_VER]:
 

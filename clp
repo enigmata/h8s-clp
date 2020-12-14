@@ -44,7 +44,7 @@ def interactiveMode( cfg ):
     while True:
 
         try:
-            cmdline = raw_input('> ')
+            cmdline = input('> ')
         except EOFError:
             break
 
