@@ -5,9 +5,9 @@ import re
 
 class Service():
     """
-    A Service class is the generic representation of a nexus service, which
-    is responsible for carrying out required functions of the service, and 
-    maintaining its own lifecycle. 
+    A Service class is the generic representation of a service, which is
+    responsible for carrying out required functions of the service, and
+    maintaining its own lifecycle.
 
     The attributes of a Service:
         Name:         Since word uniquely identifying the service's responsibility

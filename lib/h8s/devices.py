@@ -7,7 +7,7 @@ class DevicesIOError(Exception):
 class Devices():
     """
     A devices class is the generic representation of the set of devices that
-    is managed by a nexus service. 
+    is managed by a service.
 
     Common attributes of device:
         Name:        Short identifier of the device

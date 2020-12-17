@@ -1,8 +1,7 @@
 import sys, os, importlib
 
-# set up the import path to find the (3rd party) libs we need
-nexus_root_dir = sys.path[0]
-lib_root_dir   = os.path.join(nexus_root_dir,'lib')
+root_dir = sys.path[0]
+lib_root_dir   = os.path.join(root_dir,'lib')
 
 lib_dirs = [os.path.join(lib_root_dir, dirname) 
                for dirname in os.listdir(lib_root_dir)
@@ -20,36 +19,29 @@ class Config(Service):
 
     def __init__(self):
 
-        # import the services modules dynamically
         self.service_modules = {}
         self.SERVICE_MODULES_IDX_MOD = 0
         self.SERVICE_MODULES_IDX_OBJ = 1
-        self.services_dir = os.path.join(nexus_root_dir,'services')
+        self.services_dir = os.path.join(root_dir,'services')
 
         for service_name in os.listdir(self.services_dir):
-
             if not service_name == 'config' and not service_name.startswith('__'):
                 service_dir = os.path.join(self.services_dir, service_name)
                 if os.path.isdir(service_dir): 
-
                     service_key = 'services.' + service_name
                     service_mod = importlib.import_module( service_key )
                     service_obj = getattr( service_mod, service_name.capitalize() )(service_dir)
                     self.service_modules[service_key] = [ service_mod, service_obj ]
 
-        #print self.service_modules
-
-        # finally, set us up as a proper service
         Service.__init__(self,
                          os.path.join(self.services_dir, 'config'),
                          name='config', 
-                         description = 'Manages the configuration of the nexus',
+                         description = 'Manages the configuration of the mesh',
                          version=1)
 
-        self.state       = 'initialized'
+        self.state = 'initialized'
 
         self.load_commands()
-        #print self.commands
 
 
     def services(self):

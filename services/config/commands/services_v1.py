@@ -7,7 +7,7 @@ class Services(Command):
         self.owning_service = owning_service
         choices=self.services_list()
 
-        self.interface = CommandInterface('services', 'List nexus services', version, self,
+        self.interface = CommandInterface('services', 'List services', version, self,
                                           {'service': {'type':str, 
                                                        'choices':choices, 
                                                        'action':'store', 

@@ -7,10 +7,11 @@ import sys, readline
 def buildCmdLineParser(cfg, **parser_args):
 
     # overall clp cmd parser
-    clp_parser = argparse.ArgumentParser(description='Command Line Parser for Nexus', **parser_args)
+    clp_parser = argparse.ArgumentParser(description='Command Line Parser for Hephaestus',
+                                         **parser_args)
 
-    subparsers = clp_parser.add_subparsers(title='Nexus commands',
-                                           description='Query, or take action against, the nexus',
+    subparsers = clp_parser.add_subparsers(title='Hephaestus commands',
+                                           description='Query, or take action against, the mesh',
                                            dest='command', 
                                            help='Command help')
 

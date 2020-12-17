@@ -42,7 +42,7 @@ class CommandInterface():
 
 class Command():
     """
-    A Command class is the generic representation of a command of a nexus service,
+    A Command class is the generic representation of a command of a service,
     which is responsible for carrying out some particular function of the service
 
     NOTE: You do not instantiate the Command class. A particular service's command 
