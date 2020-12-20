@@ -65,7 +65,7 @@
 #                       - description
 "\x50":  # standard msg received
  - 9     # payload length (total msg length - STX byte - IM cmd byte)
- - (?P<from-id1>[\x00-\xff])(?P<from-id2>[\x00-\xff])(?P<from-id3>[\x00-\xff])(?P<to-id1>[\x00-\xff])(?P<to-id2>[\x00-\xff])(?P<to-id3>[\x00-\xff])(?P<msg-flags>[\x00-\xff])(?P<cmd1>[\x00-\xff])(?P<cmd2>[\x00-\xff])
+ - (?P<from_id1>[0-9a-f][0-9a-f])(?P<from_id2>[0-9a-f][0-9a-f])(?P<from_id3>[0-9a-f][0-9a-f])(?P<to_id1>[0-9a-f][0-9a-f])(?P<to_id2>[0-9a-f][0-9a-f])(?P<to_id3>[0-9a-f][0-9a-f])(?P<msg_flags>[0-9a-f][0-9a-f])(?P<cmd1>[0-9a-f][0-9a-f])(?P<cmd2>[0-9a-f][0-9a-f])
  - "Insteon standard message received"
 "\x60":  # response of the command:  get IM version
  - 7          # length of reply

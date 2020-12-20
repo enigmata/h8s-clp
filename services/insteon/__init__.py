@@ -107,16 +107,12 @@ class InsteonPLM:
                     # of the reply string or other monitor messages we need
                     # to consume until we get the reply message for the command
                     # we sent
-                    print(f'  before read')
                     byte_read = self.plm.read(1)
-                    print(f'  --> byte read={byte_read}')
                     while (byte_read != self.IMParms['IM_COMM_STX'].encode('ascii')):
                         byte_read = self.plm.read(1)
-                        print(f'  --> byte_read="{byte_read}"')
 
                     cmd_num_bytes = self.plm.read(1)
                     cmd_num = cmd_num_bytes.decode(encoding='unicode_escape', errors='ignore')
-                    print(f'\n  --> cmd_num_bytes {cmd_num_bytes}, cmd_num "{cmd_num}"')
 
                     if cmd_num in self.IMReceiveCmds:
                         resp_len, resp_regex, resp_description = self.IMReceiveCmds[cmd_num]
@@ -157,29 +153,25 @@ class InsteonPLM:
             # we sent
 
             byte_read = self.plm.read(1)
-            sys.stdout.write(f'  --> bytes read=\\x{ord(byte_read):x}')
-            while (byte_read != self.IMParms['IM_COMM_STX']):
-                sys.stdout.write(f' \\x{ord(byte_read):x}')
+            while (byte_read != self.IMParms['IM_COMM_STX'].encode('ascii')):
                 byte_read = self.plm.read(1)
 
-            cmd_num = self.plm.read(1)
-            print(f'\n  --> cmd # = \\x{ord(cmd_num):x}')
+            cmd_num_bytes = self.plm.read(1)
+            cmd_num = cmd_num_bytes.decode(encoding='unicode_escape', errors='ignore')
 
             if cmd_num in self.IMReceiveCmds:
                 resp_len, resp_regex, resp_description = self.IMReceiveCmds[cmd_num]
-                resp = self.plm.read(resp_len)
-                print('  --> resp=%s, actual len=%d, expected len=%d' % \
-                        (''.join('\\x'+'%x'%ord(c) for c in resp), len(resp), resp_len))
-    
-                #m = re.match(resp_regex, resp)
-                #if m: 
-                #    resp_groups = m.groupdict()
-                #    if resp_groups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
-                #        cmd_success = True
-                #    else:
-                #        resp_groups = {}
+                print(f'{resp_description}:')
 
-                #break
+                resp_bytes = self.plm.read(resp_len)
+                resp = resp_bytes.hex()
+    
+                m = re.match(resp_regex, resp)
+                if m: 
+                    resp_groups = m.groupdict()
+                    print(f"  from: {resp_groups['from_id1']}.{resp_groups['from_id2']}.{resp_groups['from_id3']}")
+                    print(f"  to:   {resp_groups['to_id1']}.{resp_groups['to_id2']}.{resp_groups['to_id3']}")
+                    print(f"    => message flags: '{resp_groups['msg_flags']}' cmds: '{resp_groups['cmd1']}', '{resp_groups['cmd2']}'")
             else:
                 print('  --> ERROR: Did not recognize the command received. Aborting so that you can fix my metadata.')
                 break
