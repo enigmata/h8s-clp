@@ -1,9 +1,10 @@
-import serial
+import codecs
 import glob
-import re
-import os
-import sys
 import json
+import os
+import re
+import serial
+import sys
 
 from pathlib import Path
 from ruamel.yaml import YAML
@@ -18,6 +19,12 @@ class InsteonException(Exception):
         self.data = msg
 class InsteonPLMConfigError(InsteonException): pass
 class InsteonPLMConfigInfo(InsteonException):  pass
+
+if os.name == 'posix':
+    from serial.tools.list_ports_posix import comports
+else:
+    raise InsteonPLMConfigError(f'Platform ("{os.name}") is not supported')
+
 
 def read_line(filename):
     """help function to read a single line from a file; otherwise returns none"""
@@ -82,58 +89,55 @@ class InsteonPLM:
         This will work in all cases because Insteon commands are idempotent.
         """
 
-        responseGroups = {}
-        commandSuccessful = False
+        resp_groups = {}
+        cmd_success = False
         cmd = cmd.upper()
 
         if cmd in self.IMSendCmds:
-            cmdstr, syntax, cmdhelp = self.IMSendCmds[cmd]
-            cmdstr = ''.join([cmdstr,args])
-            print('  --> cmdstr=%s, len=%d' % (''.join('\\x'+c.encode('hex') for c in cmdstr),len(cmdstr)))
-            writelen = len(cmdstr)
-            numwritten = self.plm.write( cmdstr )
-            if numwritten == writelen:
+            cmd_str, syntax, cmd_help = self.IMSendCmds[cmd]
+            cmd_str = ''.join([cmd_str,args])
+            cmd_bytes = cmd_str.encode('ascii')
+            write_len = len(cmd_bytes)
+            num_written = self.plm.write(cmd_bytes)
 
+            if num_written == write_len:
                 while True:
                     # need to clear out any leading nulls or garbage, until
                     # we see the STX (Start TeXt) byte signaling the beginning
                     # of the reply string or other monitor messages we need
                     # to consume until we get the reply message for the command
                     # we sent
+                    print(f'  before read')
+                    byte_read = self.plm.read(1)
+                    print(f'  --> byte read={byte_read}')
+                    while (byte_read != self.IMParms['IM_COMM_STX'].encode('ascii')):
+                        byte_read = self.plm.read(1)
+                        print(f'  --> byte_read="{byte_read}"')
 
-                    byteread = self.plm.read(1)
-                    sys.stdout.write('  --> bytes read=%s' % '\\x'+byteread.encode('hex'))
-                    while (byteread != self.IMParms['IM_COMM_STX']):
-                        sys.stdout.write(' ' + '\\x'+byteread.encode('hex'))
-                        byteread = self.plm.read(1)
+                    cmd_num_bytes = self.plm.read(1)
+                    cmd_num = cmd_num_bytes.decode(encoding='unicode_escape', errors='ignore')
+                    print(f'\n  --> cmd_num_bytes {cmd_num_bytes}, cmd_num "{cmd_num}"')
 
-                    cmdnum = self.plm.read(1)
-                    print('\n  --> cmd # = %s' % '\\x'+cmdnum.encode('hex'))
-
-                    if cmdnum in self.IMReceiveCmds:
-
-                        respLen, respRegex, respDescription = self.IMReceiveCmds[cmdnum]
-
-                        # now we can get the proper IM response string
-                        response = self.plm.read(respLen) 
-                        print('  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen))
+                    if cmd_num in self.IMReceiveCmds:
+                        resp_len, resp_regex, resp_description = self.IMReceiveCmds[cmd_num]
+                        resp_bytes = self.plm.read(resp_len)
+                        resp = resp_bytes.decode(encoding='unicode_escape', errors='ignore')
     
-                        if cmdnum == cmdstr[1]:
-                            # validate the response to the command we sent
-                            m = re.match(respRegex, response)
+                        if cmd_num == cmd_str[1]:
+                            m = re.match(resp_regex, resp)
                             if m: 
-                                responseGroups = m.groupdict()
-                                if responseGroups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
-                                    commandSuccessful = True
+                                resp_groups = m.groupdict()
+                                if resp_groups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
+                                    cmd_success = True
                                 else:
-                                    responseGroups = {}
+                                    resp_groups = {}
                             break
                     else:
                         break
         else:
             print(f'ERROR: Command not recognized: "{cmd}"')
 
-        return commandSuccessful, responseGroups 
+        return cmd_success, resp_groups
 
 
     def monitor(self):
@@ -152,33 +156,30 @@ class InsteonPLM:
             # to consume until we get the reply message for the command
             # we sent
 
-            byteread = self.plm.read(1)
-            sys.stdout.write('  --> bytes read=%s' % '\\x'+byteread.encode('hex'))
-            while (byteread != self.IMParms['IM_COMM_STX']):
-                sys.stdout.write(' ' + '\\x'+byteread.encode('hex'))
-                byteread = self.plm.read(1)
+            byte_read = self.plm.read(1)
+            sys.stdout.write(f'  --> bytes read=\\x{ord(byte_read):x}')
+            while (byte_read != self.IMParms['IM_COMM_STX']):
+                sys.stdout.write(f' \\x{ord(byte_read):x}')
+                byte_read = self.plm.read(1)
 
-            cmdnum = self.plm.read(1)
-            print('\n  --> cmd # = %s' % '\\x'+cmdnum.encode('hex'))
+            cmd_num = self.plm.read(1)
+            print(f'\n  --> cmd # = \\x{ord(cmd_num):x}')
 
-            if cmdnum in self.IMReceiveCmds:
-
-                respLen, respRegex, respDescription = self.IMReceiveCmds[cmdnum]
-
-                # now we can get the proper IM response string
-                response = self.plm.read(respLen) 
-                print('  --> response=%s, actual len=%d, expected len=%d' % (''.join('\\x'+c.encode('hex') for c in response), len(response), respLen))
+            if cmd_num in self.IMReceiveCmds:
+                resp_len, resp_regex, resp_description = self.IMReceiveCmds[cmd_num]
+                resp = self.plm.read(resp_len)
+                print('  --> resp=%s, actual len=%d, expected len=%d' % \
+                        (''.join('\\x'+'%x'%ord(c) for c in resp), len(resp), resp_len))
     
-                #m = re.match(respRegex, response)
+                #m = re.match(resp_regex, resp)
                 #if m: 
-                #    responseGroups = m.groupdict()
-                #    if responseGroups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
-                #        commandSuccessful = True
+                #    resp_groups = m.groupdict()
+                #    if resp_groups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
+                #        cmd_success = True
                 #    else:
-                #        responseGroups = {}
+                #        resp_groups = {}
 
                 #break
-
             else:
                 print('  --> ERROR: Did not recognize the command received. Aborting so that you can fix my metadata.')
                 break
@@ -192,71 +193,38 @@ class InsteonPLM:
 
     def connect(self):
     
-        # if there's already an open serial port with PLM attached,
-        # then we need to first close it so we can try a fresh connect
         self.disconnect()
 
-        # grab all serial devices as potentially having an Insteon PLM attached
-        # NOTE: this is known to work on Linux; not sure about OS X
-        USBDevices = glob.glob('/dev/ttyS*') + glob.glob('/dev/ttyUSB*') + glob.glob('/dev/ttyACM*')
+        device = None
+        for port, _, hwid in comports():
+            if re.search(r"0403:6001", hwid):
+                device = port
+                break
+
+        if device:
+            try:
+                self.plm = serial.Serial(port=device, baudrate=self.IMParms['IM_BAUDRATE'], timeout=5)
+            except serial.SerialException:  # TODO: convert each exception to a log write
+                print('  --> Failed to open serial port')
+                self.plm = None
+            except OSError:
+                print('  --> Unable to access serial port')
+                self.plm = None
     
-        # test each serial device to see if an Insteon PLM is attached
-        for device in USBDevices:
-
-            print(f'testing serial port: {device}')
-
-            # check to see if something is connected to the port
-            base = os.path.basename(device)
-            if os.path.exists('/sys/class/tty/%s/device' % (base,)):
-                # the insteon PLM is a USB-Serial device, so chk if that is what we have
-                sys_dev_path = '/sys/class/tty/%s/device/driver/%s' % (base, base)
-                if os.path.exists(sys_dev_path):
-                    sys_usb = os.path.dirname(os.path.dirname(os.path.realpath(sys_dev_path)))
-
-                    vendor = read_line(sys_usb+'/idVendor')
-                    product = read_line(sys_usb+'/idProduct')
-                    print(f'  --> USB device vendor_id:product_id={vendor}:{product}')
-
-                    # insteon PLM is an FTDI (vendor=0403) USB USART (product=6001)
-                    if (vendor == '0403' and product == '6001'):
-
-                        # chk if this FTDI USB UART is an insteon PLM
-                        try:
-                            self.plm = serial.Serial(port=device, baudrate=self.IMParms['IM_BAUDRATE'], timeout=5)
-                        except serial.SerialException:  # TODO: convert each exception to a log write
-                            print('  --> Failed to open serial port')
-                            self.plm = None # assume not a PLM on this port
-                            continue
-                        except OSError:
-                            print('  --> Unable to access serial port')
-                            self.plm = None # assume not a PLM on this port
-                            continue
-    
-                        # successfully opened serial port, so now see if what's on the
-                        # other end of the port is an Insteon PLM by asking for it's version
-                        success, response = self.send_command('GET_VERSION')
-                        if success: 
-                            print('Insteon PLM ID= %s.%s.%s; Device category=%s, subcategory=%s; firmware version=%s' % \
-                                  ('\\x'+response['id1'].encode('hex'),
-                                   '\\x'+response['id2'].encode('hex'),
-                                   '\\x'+response['id3'].encode('hex'),
-                                   '\\x'+response['dev_cat'].encode('hex'),
-                                   '\\x'+response['dev_subcat'].encode('hex'), 
-                                   '\\x'+response['firm_ver'].encode('hex')))
-                            break  # found PLM, so all done
-                        else:
-                            print('  --> failed to send IM command to serial port')
-                            self.plm.close()
-                            self.plm = None # assume not a PLM on this port
-                    else:
-                        print('  --> not an FTDI UART')
-                else:
-                    print('  --> not a USB serial device')
+            success, response = self.send_command('GET_VERSION')
+            if success:
+                print('Insteon PLM ID= %s.%s.%s; Device category=%s, subcategory=%s; firmware version=%s' % \
+                      (''.join('\\x'+'%x'%ord(c) for c in response['id1']),
+                       ''.join('\\x'+'%x'%ord(c) for c in response['id2']),
+                       ''.join('\\x'+'%x'%ord(c) for c in response['id3']),
+                       ''.join('\\x'+'%x'%ord(c) for c in response['dev_cat']),
+                       ''.join('\\x'+'%x'%ord(c) for c in response['dev_subcat']),
+                       ''.join('\\x'+'%x'%ord(c) for c in response['firm_ver'])))
             else:
-                print('  --> nothing connected to the port')
-    
-        # if we get here without finding a PLM on a USB port, then
-        # we've exhausted all possibilities and must raise an error
+                print('  --> failed to send IM command to serial port')
+                self.plm.close()
+                self.plm = None # assume not a PLM on this port
+
         if not self.plm:
             raise InsteonPLMConfigError('Could not find a PLM attached to a USB port')
 
@@ -285,7 +253,6 @@ class Insteon(Service):
             self.state = 'initialized'
 
         self.load_commands()
-        #print self.commands
 
 
     def get_plm(self):
