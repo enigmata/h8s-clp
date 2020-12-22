@@ -90,13 +90,12 @@ class InsteonPLM:
         """
 
         resp_groups = {}
-        cmd_success = False
         cmd = cmd.upper()
 
         if cmd in self.IMSendCmds:
-            cmd_str, syntax, cmd_help = self.IMSendCmds[cmd]
+            cmd_str, _, cmd_help = self.IMSendCmds[cmd]
             cmd_str = ''.join([cmd_str,args])
-            cmd_bytes = cmd_str.encode('ascii')
+            cmd_bytes = bytearray.fromhex(cmd_str)
             write_len = len(cmd_bytes)
             num_written = self.plm.write(cmd_bytes)
 
@@ -108,24 +107,22 @@ class InsteonPLM:
                     # to consume until we get the reply message for the command
                     # we sent
                     byte_read = self.plm.read(1)
-                    while (byte_read != self.IMParms['IM_COMM_STX'].encode('ascii')):
+                    while (byte_read != bytearray.fromhex(self.IMParms['IM_COMM_STX'])):
                         byte_read = self.plm.read(1)
 
                     cmd_num_bytes = self.plm.read(1)
-                    cmd_num = cmd_num_bytes.decode(encoding='unicode_escape', errors='ignore')
+                    cmd_num = cmd_num_bytes.hex()
 
                     if cmd_num in self.IMReceiveCmds:
                         resp_len, resp_regex, resp_description = self.IMReceiveCmds[cmd_num]
                         resp_bytes = self.plm.read(resp_len)
-                        resp = resp_bytes.decode(encoding='unicode_escape', errors='ignore')
+                        resp = resp_bytes.hex()
     
-                        if cmd_num == cmd_str[1]:
+                        if cmd_num == cmd_str[2:4]:
                             m = re.match(resp_regex, resp)
                             if m: 
                                 resp_groups = m.groupdict()
-                                if resp_groups['ack'] == self.IMParms['IM_CMD_SUCCESS']:
-                                    cmd_success = True
-                                else:
+                                if resp_groups['ack'] != self.IMParms['IM_CMD_SUCCESS']:
                                     resp_groups = {}
                             break
                     else:
@@ -133,7 +130,7 @@ class InsteonPLM:
         else:
             print(f'ERROR: Command not recognized: "{cmd}"')
 
-        return cmd_success, resp_groups
+        return resp_groups
 
 
     def monitor(self):
@@ -153,11 +150,11 @@ class InsteonPLM:
             # we sent
 
             byte_read = self.plm.read(1)
-            while (byte_read != self.IMParms['IM_COMM_STX'].encode('ascii')):
+            while (byte_read != bytearray.fromhex(self.IMParms['IM_COMM_STX'])):
                 byte_read = self.plm.read(1)
 
             cmd_num_bytes = self.plm.read(1)
-            cmd_num = cmd_num_bytes.decode(encoding='unicode_escape', errors='ignore')
+            cmd_num = cmd_num_bytes.hex()
 
             if cmd_num in self.IMReceiveCmds:
                 resp_len, resp_regex, resp_description = self.IMReceiveCmds[cmd_num]
@@ -203,15 +200,10 @@ class InsteonPLM:
                 print('  --> Unable to access serial port')
                 self.plm = None
     
-            success, response = self.send_command('GET_VERSION')
-            if success:
-                print('Insteon PLM ID= %s.%s.%s; Device category=%s, subcategory=%s; firmware version=%s' % \
-                      (''.join('\\x'+'%x'%ord(c) for c in response['id1']),
-                       ''.join('\\x'+'%x'%ord(c) for c in response['id2']),
-                       ''.join('\\x'+'%x'%ord(c) for c in response['id3']),
-                       ''.join('\\x'+'%x'%ord(c) for c in response['dev_cat']),
-                       ''.join('\\x'+'%x'%ord(c) for c in response['dev_subcat']),
-                       ''.join('\\x'+'%x'%ord(c) for c in response['firm_ver'])))
+            response = self.send_command('GET_VERSION')
+            if response:
+                print(f"Insteon PLM ID= {response['id1']}.{response['id2']}.{response['id3']}: ", end='')
+                print(f"device category={response['dev_cat']}, subcategory={response['dev_subcat']}, firmware version={response['firm_ver']}")
             else:
                 print('  --> failed to send IM command to serial port')
                 self.plm.close()

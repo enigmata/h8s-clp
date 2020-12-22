@@ -8,51 +8,51 @@
 #                       - command help
 #                        
 'GET_VERSION':
- - "\x02\x60" # command in hex
+ - "0260" # command in hex
  - "GET_VERSION" # command syntax
  - "Retrieve the version of the PLM, as well as other PLM info like device category and sub-category."
 'SEND_STD_MSG':
- - "\x02\x62"
+ - "0262"
  - "SEND_STD_MSG <addr1><addr2><addr3>0511<level 00-ff>" # command syntax
  - "A standard message controls insteon devices, making then turn on, off, and so on."
 'SPRINKLER_BIRCH_ON':
- - "\x02\x62\x1B\x03\x7E\x05\x40\x02"
+ - "02621B037E054002"
  - "SPRINKLER_BIRCH_ON" # command syntax
  - "Turn on the sprinkler in the birch tree stand at front of house"
 'SPRINKLER_BIRCH_OFF':
- - "\x02\x62\x1B\x03\x7E\x05\x41\x02"
+ - "02621B037E054102"
  - "SPRINKLER_BIRCH_OFF" # command syntax
  - "Turn off the sprinkler in the birch tree stand at front of house"
 'SPRINKLER_CIRCUMPORCH_ON':
- - "\x02\x62\x1B\x03\x7E\x05\x40\x05"
+ - "02621B037E054005"
  - "SPRINKLER_CIRCUMPORCH_ON" # command syntax
  - "Turn on the sprinkler around the porch"
 'SPRINKLER_CIRCUMPORCH_OFF':
- - "\x02\x62\x1B\x03\x7E\x05\x41\x05"
+ - "02621B037E054105"
  - "SPRINKLER_CIRCUMPORCH_OFF" # command syntax
  - "Turn off the sprinkler around the porch"
 'SPRINKLER_BOARDWALK_ON':
- - "\x02\x62\x1B\x03\x7E\x05\x40\x04"
+ - "02621B037E054004"
  - "SPRINKLER_BOARDWALK_ON" # command syntax
  - "Turn on the sprinkler along Boardwalk street"
 'SPRINKLER_BOARDWALK_OFF':
- - "\x02\x62\x1B\x03\x7E\x05\x41\x04"
+ - "02621B037E054104"
  - "SPRINKLER_BOARDWALK_OFF" # command syntax
  - "Turn off the sprinkler along Boardwalk street"
 'SPRINKLER_FRONTYARD_ON':
- - "\x02\x62\x1B\x03\x7E\x05\x40\x00"
+ - "02621B037E054000"
  - "SPRINKLER_FRONTYARD_ON" # command syntax
  - "Turn on the sprinkler for the front yard"
 'SPRINKLER_FRONTYARD_OFF':
- - "\x02\x62\x1B\x03\x7E\x05\x41\x00"
+ - "02621B037E054100"
  - "SPRINKLER_FRONTYARD_OFF" # command syntax
  - "Turn off the sprinkler for the front yard"
 'SPRINKLER_ND_ON':
- - "\x02\x62\x1B\x03\x7E\x05\x40\x03"
+ - "02621B037E054003"
  - "SPRINKLER_ND_ON" # command syntax
  - "Turn on the sprinkler for the strip on Northern Dancer"
 'SPRINKLER_ND_OFF':
- - "\x02\x62\x1B\x03\x7E\x05\x41\x03"
+ - "02621B037E054103"
  - "SPRINKLER_ND_OFF" # command syntax
  - "Turn off the sprinkler for the strip on Northern Dancer"
 ---
@@ -63,23 +63,23 @@
 #                       - payload length (total msg length - STX byte - IM cmd byte) 
 #                       - regex describing the shape of command's payload
 #                       - description
-"\x50":  # standard msg received
+"50":  # standard msg received
  - 9     # payload length (total msg length - STX byte - IM cmd byte)
  - (?P<from_id1>[0-9a-f][0-9a-f])(?P<from_id2>[0-9a-f][0-9a-f])(?P<from_id3>[0-9a-f][0-9a-f])(?P<to_id1>[0-9a-f][0-9a-f])(?P<to_id2>[0-9a-f][0-9a-f])(?P<to_id3>[0-9a-f][0-9a-f])(?P<msg_flags>[0-9a-f][0-9a-f])(?P<cmd1>[0-9a-f][0-9a-f])(?P<cmd2>[0-9a-f][0-9a-f])
  - "Insteon standard message received"
-"\x60":  # response of the command:  get IM version
+"60":  # response of the command:  get IM version
  - 7          # length of reply
- - (?P<id1>[\x00-\xff])(?P<id2>[\x00-\xff])(?P<id3>[\x00-\xff])(?P<dev_cat>[\x00-\xff])(?P<dev_subcat>[\x00-\xff])(?P<firm_ver>[\x00-\xff])(?P<ack>[\x06\x15])
+ - (?P<id1>[0-9a-f][0-9a-f])(?P<id2>[0-9a-f][0-9a-f])(?P<id3>[0-9a-f][0-9a-f])(?P<dev_cat>[0-9a-f][0-9a-f])(?P<dev_subcat>[0-9a-f][0-9a-f])(?P<firm_ver>[0-9a-f][0-9a-f])(?P<ack>06|15)
  - "Response of the command: GET IM VERSION"
-"\x62":  # reply of a standard msg sent
+"62":  # reply of a standard msg sent
  - 7     # payload length (total msg length - STX byte - IM cmd byte)
- - (?P<id1>[\x00-\xff])(?P<id2>[\x00-\xff])(?P<id3>[\x00-\xff])(?P<msg_flags>[\x00-\xff])(?P<cmd1>[\x00-\xff])(?P<cmd2>[\x00-\xff])(?P<ack>[\x06\x15])
+ - (?P<id1>[0-9a-f][0-9a-f])(?P<id2>[0-9a-f][0-9a-f])(?P<id3>[0-9a-f][0-9a-f])(?P<msg_flags>[0-9a-f][0-9a-f])(?P<cmd1>[0-9a-f][0-9a-f])(?P<cmd2>[0-9a-f][0-9a-f])(?P<ack>06|15)
  - "Response of the commmand: SEND STANDARD MESSAGE"
 ---
 # Part 3: Insteon Parameters or Settings
 IM_REPLY_MAXLEN: 64
 IM_BAUDRATE: 19200
 IM_CMD_TIMEOUT: null
-IM_CMD_SUCCESS: "\x06"
-IM_CMD_FAILURE: "\x15"
-IM_COMM_STX: "\x02"
+IM_CMD_SUCCESS: "06"
+IM_CMD_FAILURE: "15"
+IM_COMM_STX: "02"
