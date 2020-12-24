@@ -9,7 +9,6 @@ else:
     raise ImportError(f'ERROR: platform ("{os.name}") not supported')
 
 class Devices(Command):
-
     def __init__(self, owning_service, version):
 
         self.owning_service = owning_service
@@ -23,15 +22,8 @@ class Devices(Command):
                                                        'help':'list the numbered entry'}
                                             })
 
-    def execute(self, args, output_text):
-
-        output = []
-        if output_text:
-            devices= sorted(comports(include_links=args.symlinks))
-            output = [f'{port}' + (f'\n   ID={hwid}: {desc}' if args.verbose else '')
-                        for entry, (port, desc, hwid) in enumerate(devices, 1)
-                            if args.entry is None or args.entry == entry]
-        else:
-            pass
-
-        return output
+    def execute(self, args):
+        devices= sorted(comports(include_links=args.symlinks))
+        return [f'{port}' + (f'\n   ID={hwid}: {desc}' if args.verbose else '')
+                  for entry, (port, desc, hwid) in enumerate(devices, 1)
+                      if args.entry is None or args.entry == entry]

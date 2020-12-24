@@ -25,7 +25,6 @@ def buildCmdLineParser(cfg, **parser_args):
                                             help='Command usage help')
 
     for command in cfg.all_commands():
-        
         clp_subparser = subparsers.add_parser(command.getFQN(), help=command.getDescription())
 
         arg = command.getArgs()
@@ -60,7 +59,7 @@ def interactiveMode(cfg):
             elif args.command=='refresh' and args.refresh:
                 print('TODO: code to refresh commands thru config service')
             else:
-                output = cfg.execute_service_command(args.command, args, output_text=True)
+                output = cfg.execute_service_command(args.command, args)
                 print
                 for line in output: print(line)
 
@@ -70,8 +69,4 @@ if __name__ == '__main__':
 
     interactiveMode(cfg)
 
-    # TODO: only support one mode: interactive or batch, then
-    #       convert into main() with a return code thereby
-    #       allowing the cleaner:  sys.exit(main())
     sys.exit(0)
-

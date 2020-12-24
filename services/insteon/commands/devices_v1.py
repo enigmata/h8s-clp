@@ -17,31 +17,22 @@ class Devices(Command):
                                            '--verbose': {'action':'store_true', 
                                                          'help':'additional detail on each device'}})
 
-    def execute(self, args, output_text):
-
+    def execute(self, args):
         devices = self.plm.get_devices()
 
-        if output_text:
-    
-            output_mask = '%s  %-19s %-44s %-19s %s'
-            if args.verbose:
-                output = []
-            else:
-                output=[output_mask % ('DeviceID','Type','Name','Room','Location')]
-
-            for dev in devices:
-
-                if args.type == 'all' or devices[dev]['type'].lower().endswith(args.type):
-                    if args.verbose:
-                        output.append('ID = %s\n  Type       : %s\n  Name       : %s\n  Room       : %s\n  Location   : %s\n  Category   : %s\n  Subcategory: %s' % \
-                                      (dev,devices[dev]['type'],devices[dev]['name'],devices[dev]['room'],
-                                       devices[dev]['location'],devices[dev]['properties']['category'],devices[dev]['properties']['subcategory']))
-                    else:
-                        output.append(output_mask % (dev,devices[dev]['type'],devices[dev]['name'],devices[dev]['room'],devices[dev]['location']))
-
+        output_mask = '%s  %-19s %-44s %-19s %s'
+        if args.verbose:
+            output = []
         else:
-            output=devices
+            output=[output_mask % ('DeviceID','Type','Name','Room','Location')]
+
+        for dev in devices:
+            if args.type == 'all' or devices[dev]['type'].lower().endswith(args.type):
+                if args.verbose:
+                    output.append('ID = %s\n  Type       : %s\n  Name       : %s\n  Room       : %s\n  Location   : %s\n  Category   : %s\n  Subcategory: %s' % \
+                                  (dev,devices[dev]['type'],devices[dev]['name'],devices[dev]['room'],
+                                   devices[dev]['location'],devices[dev]['properties']['category'],devices[dev]['properties']['subcategory']))
+                else:
+                    output.append(output_mask % (dev,devices[dev]['type'],devices[dev]['name'],devices[dev]['room'],devices[dev]['location']))
 
         return output
-
-

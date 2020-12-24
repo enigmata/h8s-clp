@@ -16,9 +16,7 @@ for dir in range(len(lib_dirs)):
 from service import Service
 
 class Config(Service):
-
     def __init__(self):
-
         self.service_modules = {}
         self.SERVICE_MODULES_IDX_MOD = 0
         self.SERVICE_MODULES_IDX_OBJ = 1
@@ -43,31 +41,24 @@ class Config(Service):
 
         self.load_commands()
 
-
     def services(self):
-
         for service in self.service_modules:
             yield self.service_modules[service][ self.SERVICE_MODULES_IDX_OBJ ]
         yield self
 
 
     def all_commands(self):
-
         for service in self.services():
             for command in service.command_interfaces():
                 yield command
 
 
-    def execute_service_command(self, command, args, output_text):
- 
+    def execute_service_command(self, command, args):
         service,cmd = command.split('.')
 
         if service == 'config':
-            output = self.execute_command(cmd, args, output_text)
+            output = self.execute_command(cmd, args)
         else:
-            output = self.service_modules['services.'+service][self.SERVICE_MODULES_IDX_OBJ].execute_command(cmd, args, output_text)
+            output = self.service_modules['services.'+service][self.SERVICE_MODULES_IDX_OBJ].execute_command(cmd, args)
 
         return output
-
-
-

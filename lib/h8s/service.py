@@ -2,7 +2,6 @@ import os
 import importlib
 import re
 
-
 class Service():
     """
     A Service class is the generic representation of a service, which is
@@ -21,7 +20,6 @@ class Service():
     """
 
     def __init__(self, path, name, description, version):
-
         self.name = name
         self.description = description
         self.version = version
@@ -55,69 +53,45 @@ class Service():
         return self.root_dir
 
     def load_commands(self):
-
         for command_fname in os.listdir(self.cmd_dir):
-            
             m = self.re_command_fname.match(command_fname)
             if m and os.path.isfile(os.path.join(self.cmd_dir, command_fname)):
-
                 command_name = m.group(2)
                 command_ver = int(m.group(3))
 
                 if command_name in self.commands and command_ver > self.commands[command_name][self.COMMANDS_IDX_VER]:
-
-                    # not clear if order of deletion matters, so I will err on the side of caution 
                     del self.commands[command_name][self.COMMANDS_IDX_OBJ] 
                     del self.commands[command_name][self.COMMANDS_IDX_MOD] 
                     del self.commands[command_name]
 
                 if command_name not in self.commands:
-
                     command_fullname = m.group(1)
                     command_mod = importlib.import_module('services.'+self.service_name+'.commands.'+command_fullname)
                     command_obj = getattr( command_mod, command_name.capitalize() )(self, command_ver)
                     self.commands[command_name] = [ command_mod, command_obj, command_ver, command_ver ]
-
                 else:
-
                     if command_ver > self.commands[command_name][self.COMMANDS_IDX_SAW]:
                         self.commands[command_name][self.COMMANDS_IDX_SAW] = command_ver
 
-
         for command_name in self.commands:
-
             if self.commands[command_name][self.COMMANDS_IDX_SAW] == self.commands[command_name][self.COMMANDS_IDX_VER]:
-
-                # command loaded is at same version as highest command file on disk,
-                # so just reset that we saw it to prepare for the next time we load commands
                 self.commands[command_name][self.COMMANDS_IDX_SAW] = 0
-
-            else: # either command file on disk (all vers) are gone, or we're rolling back to earlier ver
-
+            else:
                 command_ver = self.commands[command_name][self.COMMANDS_IDX_SAW] 
 
-                # not clear if order of deletion matters, so I will err on the side of caution 
                 del self.commands[command_name][self.COMMANDS_IDX_OBJ] 
                 del self.commands[command_name][self.COMMANDS_IDX_MOD] 
                 del self.commands[command_name]
 
                 if command_ver > 0:
-                   
-                    # we're rolling back to an earlier version of command, and we've already
-                    # made room for it because we've deleted the newer version from the dict
                     command_mod = importlib.import_module('services.'+self.service_name+'.commands.'+command_name+'_v'+command_ver)
                     command_obj = getattr( command_mod, command_name.capitalize() )(self, command_ver)
                     self.commands[command_name] = [ command_mod, command_obj, command_ver, 0 ]
-    
 
     def command_interfaces(self):
-
         for command in self.commands:
             yield self.commands[command][self.COMMANDS_IDX_OBJ].getInterface()
 
 
-    def execute_command(self, command, args, output_text):
-
-        return self.commands[command][self.COMMANDS_IDX_OBJ].execute(args, output_text)
-
-
+    def execute_command(self, command, args):
+        return self.commands[command][self.COMMANDS_IDX_OBJ].execute(args)
