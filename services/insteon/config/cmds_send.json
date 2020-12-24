@@ -1,0 +1,62 @@
+{
+    "GET_VERSION": [
+        "0260",
+        "GET_VERSION",
+        "Retrieve the version of the PLM, as well as other PLM info like device category and sub-category."
+    ],
+    "SEND_STD_MSG": [
+        "0262",
+        "SEND_STD_MSG <addr1><addr2><addr3>0511<level 00-ff>",
+        "A standard message controls insteon devices, making then turn on, off, and so on."
+    ],
+    "SPRINKLER_BIRCH_ON": [
+        "02621B037E054002",
+        "SPRINKLER_BIRCH_ON",
+        "Turn on the sprinkler in the birch tree stand at front of house"
+    ],
+    "SPRINKLER_BIRCH_OFF": [
+        "02621B037E054102",
+        "SPRINKLER_BIRCH_OFF",
+        "Turn off the sprinkler in the birch tree stand at front of house"
+    ],
+    "SPRINKLER_CIRCUMPORCH_ON": [
+        "02621B037E054005",
+        "SPRINKLER_CIRCUMPORCH_ON",
+        "Turn on the sprinkler around the porch"
+    ],
+    "SPRINKLER_CIRCUMPORCH_OFF": [
+        "02621B037E054105",
+        "SPRINKLER_CIRCUMPORCH_OFF",
+        "Turn off the sprinkler around the porch"
+    ],
+    "SPRINKLER_BOARDWALK_ON": [
+        "02621B037E054004",
+        "SPRINKLER_BOARDWALK_ON",
+        "Turn on the sprinkler along Boardwalk street"
+    ],
+    "SPRINKLER_BOARDWALK_OFF": [
+        "02621B037E054104",
+        "SPRINKLER_BOARDWALK_OFF",
+        "Turn off the sprinkler along Boardwalk street"
+    ],
+    "SPRINKLER_FRONTYARD_ON": [
+        "02621B037E054000",
+        "SPRINKLER_FRONTYARD_ON",
+        "Turn on the sprinkler for the front yard"
+    ],
+    "SPRINKLER_FRONTYARD_OFF": [
+        "02621B037E054100",
+        "SPRINKLER_FRONTYARD_OFF",
+        "Turn off the sprinkler for the front yard"
+    ],
+    "SPRINKLER_ND_ON": [
+        "02621B037E054003",
+        "SPRINKLER_ND_ON",
+        "Turn on the sprinkler for the strip on Northern Dancer"
+    ],
+    "SPRINKLER_ND_OFF": [
+        "02621B037E054103",
+        "SPRINKLER_ND_OFF",
+        "Turn off the sprinkler for the strip on Northern Dancer"
+    ]
+ }

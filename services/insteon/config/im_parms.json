@@ -1,0 +1,8 @@
+{
+    "IM_REPLY_MAXLEN": 64,
+    "IM_BAUDRATE": 19200,
+    "IM_CMD_TIMEOUT": 5,
+    "IM_CMD_SUCCESS": "06",
+    "IM_CMD_FAILURE": "15",
+    "IM_COMM_STX": "02"
+}

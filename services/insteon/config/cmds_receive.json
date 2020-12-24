@@ -1,0 +1,17 @@
+{
+    "50": [
+        9,
+        "(?P<from_id1>[0-9a-f][0-9a-f])(?P<from_id2>[0-9a-f][0-9a-f])(?P<from_id3>[0-9a-f][0-9a-f])(?P<to_id1>[0-9a-f][0-9a-f])(?P<to_id2>[0-9a-f][0-9a-f])(?P<to_id3>[0-9a-f][0-9a-f])(?P<msg_flags>[0-9a-f][0-9a-f])(?P<cmd1>[0-9a-f][0-9a-f])(?P<cmd2>[0-9a-f][0-9a-f])",
+        "Insteon standard message received"
+    ],
+    "60": [
+        7,
+        "(?P<id1>[0-9a-f][0-9a-f])(?P<id2>[0-9a-f][0-9a-f])(?P<id3>[0-9a-f][0-9a-f])(?P<dev_cat>[0-9a-f][0-9a-f])(?P<dev_subcat>[0-9a-f][0-9a-f])(?P<firm_ver>[0-9a-f][0-9a-f])(?P<ack>06|15)",
+        "Response of the command: GET IM VERSION"
+    ],
+    "62": [
+        7,
+        "(?P<id1>[0-9a-f][0-9a-f])(?P<id2>[0-9a-f][0-9a-f])(?P<id3>[0-9a-f][0-9a-f])(?P<msg_flags>[0-9a-f][0-9a-f])(?P<cmd1>[0-9a-f][0-9a-f])(?P<cmd2>[0-9a-f][0-9a-f])(?P<ack>06|15)",
+        "Response of the commmand: SEND STANDARD MESSAGE"
+    ]
+}

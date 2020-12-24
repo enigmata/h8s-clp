@@ -1,9 +1,7 @@
 from command import Command, CommandInterface
 
 class Commands(Command):
-
     def __init__(self, owning_service, version):
-
         self.owning_service = owning_service
         self.plm = owning_service.get_plm()
 
@@ -16,25 +14,24 @@ class Commands(Command):
                                                          'help':'additional detail on each command'}})
 
     def execute(self, args, output_text):
-
         if args.type == 'send':
             cmds = self.plm.get_send_cmds()
         else:
             cmds = self.plm.get_receive_cmds()
 
         if output_text:
-    
             if args.type == 'send':
                 if args.verbose:
-                    output = ['%s\n  hex cmd string=%s\n  syntax=%s\n  help=%s' % \
-                              (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0]), cmds[cmd][1], cmds[cmd][2])
-                                 for cmd in cmds]
+                    output = [f'{cmd:30}\n  {cmds[cmd][2]}\n  Command: {cmds[cmd][0]}\n  Syntax:  {cmds[cmd][1]}' for cmd in cmds]
                 else:
-                    output = ['%-30s %s' % (cmd, ''.join('\\x'+c.encode('hex') for c in cmds[cmd][0])) for cmd in cmds]
-                    output.insert(0, 'Name                           Hex Command String')
+                    output = [f'{cmd:30} {cmds[cmd][0]}' for cmd in cmds]
+                    output.insert(0, '%-30s %s' % ("Name", "Hex Command String"))
             else:
-                output=['tbd']
-
+                if args.verbose:
+                    output = [f'\n{cmds[cmd][2]}\n  Command: {cmd}\n  Msg len: {cmds[cmd][0]} bytes\n  Msg syntax: "{cmds[cmd][1]}"' for cmd in cmds]
+                else:
+                    output = [f'{cmd:8} {cmds[cmd][2]}' for cmd in cmds]
+                    output.insert(0, '%-8s %s' % ("Command", "Description"))
         else:
             output=cmds
 

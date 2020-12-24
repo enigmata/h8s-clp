@@ -7,7 +7,6 @@ import serial
 import sys
 
 from pathlib import Path
-from ruamel.yaml import YAML
 
 # Terminology:
 #   IM = Insteon PLM
@@ -34,28 +33,15 @@ class InsteonPLM:
     """
 
     def __init__(self):
+        self.config_dir = ''
+        self.plm = None
+        self.IMParms = self._load_config('im_parms.json')
+        self.IMReceiveCmds = self._load_config('cmds_receive.json')
+        self.IMSendCmds = self._load_config('cmds_send.json')
+        self.devices = self._load_config('devices.json')
 
-        self.plm = None  # represents serial port to which plm is attached
-
-        try:
-            cfg_file= Path(os.path.join(os.path.dirname(sys.modules['services.insteon'].__file__), 'insteon.yaml'))
-        except IOError:
-            cfg_file = None  # ensure to raise native exception
-
-        if not cfg_file:
-            raise InsteonPLMConfigError('Cannot open or read insteon json config files')
-
-        yaml = YAML(typ='safe')
-        self.IMSendCmds, self.IMReceiveCmds, self.IMParms = yaml.load_all(cfg_file)
-        if not self.IMSendCmds or not self.IMReceiveCmds or not self.IMParms:
-            raise InsteonPLMConfigError('Cannot read insteon.yaml config file')
-
-        try:
-            f = open(os.path.join(os.path.dirname(sys.modules['services.insteon'].__file__), 'devices.json'))
-            self.devices = json.load(f)
-            f.close()
-        except IOError:
-            raise InsteonPLMConfigError('Cannot read devices.json file')
+        if not self.IMSendCmds or not self.IMReceiveCmds or not self.IMParms or not self.devices:
+            raise InsteonPLMConfigError('Unable to read configuration')
 
     def get_send_cmds(self):
 
@@ -148,6 +134,16 @@ class InsteonPLM:
 
         return cmd_num, msg_groups
 
+    def _load_config(self, config_file):
+        if not self.config_dir:
+            self.config_dir = os.path.join(os.path.dirname(sys.modules['services.insteon'].__file__), 'config')
+        try:
+            f = open(os.path.join(self.config_dir, config_file))
+            config_data = json.load(f)
+            f.close()
+        except IOError:
+            config_data = {}
+        return config_data
 
     def disconnect(self):
 
@@ -167,7 +163,9 @@ class InsteonPLM:
 
         if device:
             try:
-                self.plm = serial.Serial(port=device, baudrate=self.IMParms['IM_BAUDRATE'], timeout=5)
+                self.plm = serial.Serial(port=device,
+                                         baudrate=self.IMParms['IM_BAUDRATE'],
+                                         timeout=self.IMParms['IM_CMD_TIMEOUT'])
             except serial.SerialException:  # TODO: convert each exception to a log write
                 print('  --> Failed to open serial port')
                 self.plm = None
