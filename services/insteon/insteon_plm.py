@@ -88,7 +88,7 @@ class InsteonPLM:
         return response
 
 
-    def monitor(self):
+    def monitor(self, filtered_cmd_num):
         """
         Query the PLM for messages, of which there are two types
         that are send from the PLM to the host (this code):
@@ -96,18 +96,28 @@ class InsteonPLM:
         2) All 0x50 series commands received by the PLM sent
            by other devices, hosts
         """
-
-        while True:
-            cmd_num, msg = self._receive_msg()
-            if msg: 
-                _, _, msg_description = self.IMReceiveCmds[cmd_num]
-                print(f'{msg_description}:')
-                print(f"  from: {msg['from_id1']}.{msg['from_id2']}.{msg['from_id3']}")
-                print(f"  to:   {msg['to_id1']}.{msg['to_id2']}.{msg['to_id3']}")
-                print(f"    => message flags: '{msg['msg_flags']}' cmds: '{msg['cmd1']}', '{msg['cmd2']}'")
-            else:
-                print('  --> ERROR: Did not recognize the command received. Aborting so that you can fix my metadata.')
-                break
+        if filtered_cmd_num is None or filtered_cmd_num in self.IMReceiveCmds:
+            print('Commencing monitoring...')
+            if filtered_cmd_num:
+                print(f'Filtering only messages with command number = "{filtered_cmd_num}".')
+            print('(Ctrl-C to terminate)')
+            try:
+                while True:
+                    cmd_num, msg = self._receive_msg()
+                    if msg:
+                        if filtered_cmd_num is None or filtered_cmd_num == cmd_num:
+                            _, _, msg_description = self.IMReceiveCmds[cmd_num]
+                            print(f'{msg_description}:')
+                            print(f"  from: {msg['from_id1']}.{msg['from_id2']}.{msg['from_id3']}")
+                            print(f"  to:   {msg['to_id1']}.{msg['to_id2']}.{msg['to_id3']}")
+                            print(f"    => message flags: '{msg['msg_flags']}' cmds: '{msg['cmd1']}', '{msg['cmd2']}'")
+                    else:
+                        print(f'ERROR: Did not recognize the command "{cmd_num}" received. Aborting so that you can fix my metadata.')
+                        break
+            except KeyboardInterrupt:
+                print('\nCtrl-C received. Exiting monitoring.')
+        else:
+            print(f'ERROR: Not a valid command on which to filter received messages: "{filtered_cmd_num}".')
 
     def _receive_msg(self):
         msg_groups = {}
