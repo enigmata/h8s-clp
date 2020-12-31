@@ -108,8 +108,10 @@ class InsteonPLM:
                         if filtered_cmd_num is None or filtered_cmd_num == cmd_num:
                             _, _, msg_description = self.IMReceiveCmds[cmd_num]
                             print(f'{msg_description}:')
-                            print(f"  from: {msg['from_id1']}.{msg['from_id2']}.{msg['from_id3']}")
-                            print(f"  to:   {msg['to_id1']}.{msg['to_id2']}.{msg['to_id3']}")
+                            dev_id, dev_name = self._construct_device_id('from_id', msg)
+                            print(f'  from: {dev_id} ({dev_name})')
+                            dev_id, dev_name = self._construct_device_id('to_id', msg)
+                            print(f'  to:   {dev_id} ({dev_name})')
                             print(f"    => message flags: '{msg['msg_flags']}' cmds: '{msg['cmd1']}', '{msg['cmd2']}'")
                     else:
                         print(f'ERROR: Did not recognize the command "{cmd_num}" received. Aborting so that you can fix my metadata.')
@@ -118,6 +120,13 @@ class InsteonPLM:
                 print('\nCtrl-C received. Exiting monitoring.')
         else:
             print(f'ERROR: Not a valid command on which to filter received messages: "{filtered_cmd_num}".')
+
+    def _construct_device_id(self, id_str, msg):
+        dev_id = '.'.join([msg[id_str+'1'], msg[id_str+'2'], msg[id_str+'3']]).upper()
+        dev_name = 'unknown'
+        if dev_id in self.devices:
+            dev_name = self.devices[dev_id]['name'] + " in " + self.devices[dev_id]['room'] + " at " + self.devices[dev_id]['location']
+        return dev_id, dev_name
 
     def _receive_msg(self):
         msg_groups = {}

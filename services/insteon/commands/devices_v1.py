@@ -20,7 +20,7 @@ class Devices(Command):
     def execute(self, args):
         devices = self.plm.get_devices()
 
-        output_mask = '%s  %-19s %-44s %-19s %s'
+        output_mask = '%s  %-19s %-33s %-23s %s'
         if args.verbose:
             output = []
         else:
